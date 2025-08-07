@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import AppAdmin from "./pages/AppAdmin.jsx";
+import MataKuliahPage from "./pages/MataKuliahPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "/admin/mata-kuliah",
+        element: <MataKuliahPage />,
       },
     ],
   },
