@@ -3,6 +3,10 @@ import {
   FiClipboard,
   FiAlertTriangle,
   FiSmile,
+  FiUsers,
+  FiBook,
+  FiCalendar,
+  FiFileText,
 } from "react-icons/fi";
 import { Bar, Pie } from "react-chartjs-2";
 import {
@@ -15,6 +19,13 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import {
+  dataUser,
+  dataMataKuliah,
+  dataTahunAjaran,
+  dataSpmi,
+  dataPertemuan,
+} from "../../utils/Data.js";
 
 ChartJS.register(
   CategoryScale,
@@ -27,13 +38,42 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  // Calculate stats from data
+  const activeUsers = dataUser.filter(
+    (user) => user.role !== "tidak aktif"
+  ).length;
+  const activeCourses = dataMataKuliah.length;
+  const activeAcademicYear = dataTahunAjaran.filter(
+    (year) => year.status === "Aktif"
+  ).length;
+  const totalMeetings = dataPertemuan.length;
+
   // Data for charts
-  const barData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun"],
+  const userRoleData = {
+    labels: ["Admin", "Kaprodi", "Dosen", "Tidak Aktif"],
     datasets: [
       {
-        label: "Pencapaian Mutu",
-        data: [75, 80, 85, 82, 88, 90],
+        data: [
+          dataUser.filter((u) => u.role === "admin").length,
+          dataUser.filter((u) => u.role === "kaprodi").length,
+          dataUser.filter((u) => u.role === "dosen").length,
+          dataUser.filter((u) => u.role === "tidak aktif").length,
+        ],
+        backgroundColor: ["#991B1B", "#DC2626", "#F87171", "#FECACA"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const courseMeetingData = {
+    labels: dataMataKuliah.map((course) => course.nama_matkul),
+    datasets: [
+      {
+        label: "Jumlah Pertemuan",
+        data: dataMataKuliah.map((course) => {
+          const spmi = dataSpmi.find((s) => s.mata_kuliah_id === course.id);
+          return spmi ? spmi.jumlah_pertemuan : 0;
+        }),
         backgroundColor: "#991B1B",
         borderColor: "#991B1B",
         borderWidth: 1,
@@ -41,46 +81,57 @@ const Dashboard = () => {
     ],
   };
 
-  const pieData = {
-    labels: ["Pengajaran", "Penelitian", "Layanan", "Administrasi"],
-    datasets: [
-      {
-        data: [40, 30, 20, 10],
-        backgroundColor: ["#991B1B", "#DC2626", "#F87171", "#FECACA"],
-        borderWidth: 1,
-      },
-    ],
-  };
+  // Recent activities
+  const recentActivities = dataPertemuan
+    .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
+    .slice(0, 4)
+    .map((meeting) => {
+      const spmi = dataSpmi.find((s) => s.id === meeting.spmi_id);
+      const course = dataMataKuliah.find((c) => c.id === spmi?.mata_kuliah_id);
+      const lecturer = dataUser.find((u) => u.id === spmi?.dosen_id);
+
+      return {
+        date: new Date(meeting.tanggal).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+        course: course?.nama_matkul || "Unknown",
+        lecturer: lecturer?.name || "Unknown",
+        meeting: `Pertemuan ${meeting.pertemuan_ke}`,
+        status: "Selesai",
+      };
+    });
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-red-800">Dashboard Mutu</h1>
+      <h1 className="text-2xl font-bold text-black">Dashboard</h1>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          icon={<FiCheckCircle className="text-green-600" />}
-          title="Standar Terpenuhi"
-          value="85/100"
-          description="Standar mutu yang telah terpenuhi"
+          icon={<FiUsers className="text-red-600" />}
+          title="Pengguna Aktif"
+          value={`${activeUsers}`}
+          description="Total pengguna aktif sistem"
         />
         <StatCard
-          icon={<FiClipboard className="text-blue-600" />}
-          title="Audit Bulan Ini"
-          value="5"
-          description="Audit internal dilakukan"
+          icon={<FiBook className="text-red-600" />}
+          title="Mata Kuliah"
+          value={`${activeCourses}`}
+          description="Total mata kuliah tersedia"
         />
         <StatCard
-          icon={<FiAlertTriangle className="text-yellow-600" />}
-          title="Perbaikan Aktif"
-          value="12"
-          description="Tindakan perbaikan berjalan"
+          icon={<FiCalendar className="text-red-600" />}
+          title="Tahun Ajaran"
+          value={`${activeAcademicYear}`}
+          description="Tahun ajaran aktif"
         />
         <StatCard
-          icon={<FiSmile className="text-red-600" />}
-          title="Kepuasan Pengguna"
-          value="78%"
-          description="Tingkat kepuasan pengguna sistem"
+          icon={<FiFileText className="text-red-600" />}
+          title="Pertemuan"
+          value={`${totalMeetings}`}
+          description="Total pertemuan tercatat"
         />
       </div>
 
@@ -88,27 +139,27 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-4 text-red-800">
-            Tren Pencapaian Mutu
-          </h2>
-          <Bar data={barData} options={{ responsive: true }} />
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4 text-red-800">
-            Distribusi Standar Mutu
+            Distribusi Peran Pengguna
           </h2>
           <div className="h-64">
             <Pie
-              data={pieData}
+              data={userRoleData}
               options={{ responsive: true, maintainAspectRatio: false }}
             />
           </div>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h2 className="text-lg font-semibold mb-4 text-red-800">
+            Pertemuan per Mata Kuliah
+          </h2>
+          <Bar data={courseMeetingData} options={{ responsive: true }} />
         </div>
       </div>
 
       {/* Recent Activity */}
       <div className="bg-white p-4 rounded-lg shadow">
         <h2 className="text-lg font-semibold mb-4 text-red-800">
-          Aktivitas Terkini
+          Aktivitas Pertemuan Terkini
         </h2>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -118,10 +169,13 @@ const Dashboard = () => {
                   Tanggal
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-red-800 uppercase tracking-wider">
-                  Auditor
+                  Mata Kuliah
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-red-800 uppercase tracking-wider">
-                  Unit
+                  Dosen
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-red-800 uppercase tracking-wider">
+                  Pertemuan
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-red-800 uppercase tracking-wider">
                   Status
@@ -129,50 +183,26 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {[
-                {
-                  date: "15 Jun 2023",
-                  auditor: "Dr. Ahmad",
-                  unit: "Fakultas Teknik",
-                  status: "Selesai",
-                },
-                {
-                  date: "14 Jun 2023",
-                  auditor: "Prof. Siti",
-                  unit: "Fakultas Ekonomi",
-                  status: "Dalam Proses",
-                },
-                {
-                  date: "10 Jun 2023",
-                  auditor: "Dr. Budi",
-                  unit: "Fakultas Hukum",
-                  status: "Selesai",
-                },
-                {
-                  date: "5 Jun 2023",
-                  auditor: "Dr. Ani",
-                  unit: "LPPM",
-                  status: "Ditolak",
-                },
-              ].map((item, index) => (
+              {recentActivities.map((item, index) => (
                 <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {item.date}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                    {item.auditor}
+                    {item.course}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                    {item.unit}
+                    {item.lecturer}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {item.meeting}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                         item.status === "Selesai"
                           ? "bg-green-100 text-green-800"
-                          : item.status === "Dalam Proses"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
+                          : "bg-yellow-100 text-yellow-800"
                       }`}
                     >
                       {item.status}

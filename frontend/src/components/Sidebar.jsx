@@ -1,37 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FiHome,
-  FiFileText,
-  FiCheckSquare,
   FiUsers,
   FiBarChart2,
-  FiSettings,
   FiChevronDown,
   FiChevronRight,
+  FiUser,
+  FiLogOut,
+  FiBook,
 } from "react-icons/fi";
+import { FaUserCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-const SideBar = ({ isOpen, closeSidebar }) => {
-  const [activeMenu, setActiveMenu] = useState(null);
-
-  const toggleMenu = (menu) => {
-    if (activeMenu === menu) {
-      setActiveMenu(null);
-    } else {
-      setActiveMenu(menu);
+const SideBar = ({ isOpen }) => {
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [userRole, setUserRole] = useState("admin");
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (currentUser) {
+      setUserRole(currentUser.role);
     }
-  };
+  }, []);
 
   return (
     <aside
       className={`bg-white text-red-800 w-64 md:w-72 h-full fixed md:relative z-40 transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0 transition-transform duration-200 ease-in-out shadow-md`}
+      } md:translate-x-0 transition-transform duration-200 ease-in-out`}
     >
       {/* Logo */}
-      <div className="flex items-center justify-center p-4 border-b border-red-100">
+      <div className="flex items-center justify-center p-4">
         <img
           src="https://pasim.ac.id/uploads/page/logo-pasim.png"
-          alt=""
+          alt="Logo PASIM"
           className="w-12 h-12 mr-2"
         />
         <h1 className="text-xl font-bold">
@@ -39,110 +40,94 @@ const SideBar = ({ isOpen, closeSidebar }) => {
         </h1>
       </div>
 
-      {/* Close button for mobile */}
-      <button
-        onClick={closeSidebar}
-        className="md:hidden absolute top-4 right-4 p-1 rounded-full hover:bg-red-100"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
+      {/* Program Studi */}
+      <div className="flex items-center justify-center">
+        <p className="text-xl font-bold text-black mb-4">
+          S1 Teknik Informatika
+        </p>
+      </div>
 
+      <div className="border-b-2 border-red-300 "></div>
       {/* Menu Items */}
       <nav className="p-4">
         <ul className="space-y-2">
-          <li>
-            <a
-              href="#"
-              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-            >
-              <FiHome className="mr-3" />
-              Dashboard
-            </a>
-          </li>
-
-          {/* Manajemen Mutu */}
+          {/* Menu Akun */}
           <li>
             <button
-              onClick={() => toggleMenu("mutu")}
+              onClick={() => setIsAccountOpen(!isAccountOpen)}
               className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-red-50 font-medium"
             >
               <div className="flex items-center">
-                <FiFileText className="mr-3" />
-                Manajemen Mutu
+                <FaUserCircle className="mr-2 text-black" />
+                <span>Akun</span>
               </div>
-              {activeMenu === "mutu" ? <FiChevronDown /> : <FiChevronRight />}
+              {isAccountOpen ? <FiChevronDown /> : <FiChevronRight />}
             </button>
-            {activeMenu === "mutu" && (
+            {isAccountOpen && (
               <ul className="ml-8 mt-2 space-y-2">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/admin/profil"
                     className="flex items-center p-2 rounded-lg hover:bg-red-50"
                   >
-                    Standar Mutu
-                  </a>
+                    <FiUser className="mr-2 text-black" />
+                    Profil
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="flex items-center p-2 rounded-lg hover:bg-red-50"
+                  <button
+                    onClick={() => {
+                      // Handle logout logic here
+                      window.location.href = "/login";
+                      localStorage.removeItem("currentUser");
+                    }}
+                    className="flex items-center w-full p-2 rounded-lg hover:bg-red-50"
                   >
-                    Audit Internal
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center p-2 rounded-lg hover:bg-red-50"
-                  >
-                    Tindakan Perbaikan
-                  </a>
+                    <FiLogOut className="mr-2 text-black" />
+                    Keluar
+                  </button>
                 </li>
               </ul>
             )}
           </li>
-
           <li>
-            <a
-              href="#"
+            <Link
+              to="/admin/dashboard"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
             >
-              <FiUsers className="mr-3" />
-              Pengguna
-            </a>
+              <FiHome className="mr-2 text-black" />
+              Dashboard
+            </Link>
           </li>
-
+          {/* Only show Pengguna menu for admin */}
+          {userRole === "admin" && (
+            <li>
+              <Link
+                to="/admin/pengguna"
+                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              >
+                <FiUsers className="mr-2 text-black" />
+                Pengguna
+              </Link>
+            </li>
+          )}
           <li>
-            <a
-              href="#"
+            <Link
+              to="/admin/matakuliah"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
             >
-              <FiBarChart2 className="mr-3" />
+              <FiBook className="mr-2 text-black" />
+              Mata Kuliah
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/admin/laporan"
+              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+            >
+              <FiBarChart2 className="mr-2 text-black" />
               Laporan
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="#"
-              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-            >
-              <FiSettings className="mr-3" />
-              Pengaturan
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
