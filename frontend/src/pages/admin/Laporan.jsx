@@ -221,7 +221,7 @@ function Laporan() {
           />
         </div>
 
-        {isKaprodi && (
+        {(isKaprodi || isAdmin) && (
           <button
             onClick={() => {
               setIsModalOpen(true);
@@ -320,7 +320,7 @@ function Laporan() {
                           <FiEye />
                         </button>
 
-                        {isKaprodi && (
+                        {(isKaprodi || isAdmin) && (
                           <>
                             <button
                               onClick={() => handleEdit(item)}

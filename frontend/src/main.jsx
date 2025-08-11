@@ -11,20 +11,25 @@ import Pengguna from "./pages/admin/Pengguna.jsx";
 import Laporan from "./pages/admin/Laporan.jsx";
 import Profil from "./pages/Profil.jsx";
 import Matakuliah from "./pages/admin/MataKuliah.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 const router = createBrowserRouter([
+  {
+    path: "*",
+    element: <NotFound />,
+  },
   {
     path: "/",
     element: <App />,
     children: [
       {
-        path: "/login",
+        path: "/",
         element: <Login />,
       },
-      {
-        path: "/register",
-        element: <Register />,
-      },
+      // {
+      //   path: "/register",
+      //   element: <Register />,
+      // },
     ],
   },
   {

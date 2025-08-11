@@ -78,7 +78,7 @@ const SideBar = ({ isOpen }) => {
                   <button
                     onClick={() => {
                       // Handle logout logic here
-                      window.location.href = "/login";
+                      window.location.href = "/";
                       localStorage.removeItem("currentUser");
                     }}
                     className="flex items-center w-full p-2 rounded-lg hover:bg-red-50"
