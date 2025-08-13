@@ -50,7 +50,7 @@ export const dataUser = [
         role: "admin",
         nidn: "",
         username: "admin",
-        password: "admin123",
+        password: "123",
         email: "admin@univ.ac.id"
     },
     {

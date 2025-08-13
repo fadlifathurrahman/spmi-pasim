@@ -8,6 +8,7 @@ import {
   FiUser,
   FiLogOut,
   FiBook,
+  FiArchive, // Tambahkan ikon Arsip
 } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -15,6 +16,7 @@ import { Link } from "react-router-dom";
 const SideBar = ({ isOpen }) => {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [userRole, setUserRole] = useState("admin");
+
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if (currentUser) {
@@ -48,6 +50,7 @@ const SideBar = ({ isOpen }) => {
       </div>
 
       <div className="border-b-2 border-red-300 "></div>
+
       {/* Menu Items */}
       <nav className="p-4">
         <ul className="space-y-2">
@@ -77,7 +80,6 @@ const SideBar = ({ isOpen }) => {
                 <li>
                   <button
                     onClick={() => {
-                      // Handle logout logic here
                       window.location.href = "/";
                       localStorage.removeItem("currentUser");
                     }}
@@ -90,6 +92,7 @@ const SideBar = ({ isOpen }) => {
               </ul>
             )}
           </li>
+
           <li>
             <Link
               to="/admin/dashboard"
@@ -99,6 +102,7 @@ const SideBar = ({ isOpen }) => {
               Dashboard
             </Link>
           </li>
+
           {/* Only show Pengguna menu for admin */}
           {userRole === "admin" && (
             <li>
@@ -111,6 +115,7 @@ const SideBar = ({ isOpen }) => {
               </Link>
             </li>
           )}
+
           <li>
             <Link
               to="/admin/matakuliah"
@@ -120,6 +125,7 @@ const SideBar = ({ isOpen }) => {
               Mata Kuliah
             </Link>
           </li>
+
           <li>
             <Link
               to="/admin/laporan"
@@ -129,6 +135,19 @@ const SideBar = ({ isOpen }) => {
               Laporan
             </Link>
           </li>
+
+          {/* Menu Arsip Data - Hanya untuk admin dan kaprodi */}
+          {(userRole === "admin" || userRole === "kaprodi") && (
+            <li>
+              <Link
+                to="/admin/arsip"
+                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              >
+                <FiArchive className="mr-2 text-black" />
+                Arsip Data
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
     </aside>
