@@ -7,13 +7,13 @@ import Login from "./pages/Login.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import StandarSubstandar from "./pages/StandarSubstandar.jsx";
-// import TargetIndikator from "./pages/TargetIndikator.jsx";
-// import TahunAkademikPeriode from "./pages/TahunAkademikPeriode.jsx";
-// import InputCapaian from "./pages/InputCapaian.jsx";
-// import ValidasiCapaian from "./pages/ValidasiCapaian.jsx";
-// import LaporanProdi from "./pages/LaporanProdi.jsx";
-// import LaporanAudit from "./pages/LaporanAudit.jsx";
-// import Evaluasi from "./pages/Evaluasi.jsx";
+import TargetIndikator from "./pages/TargetIndikator.jsx";
+import TahunPeriode from "./pages/TahunPeriode.jsx";
+import Evaluasi from "./pages/Evaluasi.jsx";
+import InputCapaian from "./pages/InputCapaian.jsx";
+import ValidasiCapaian from "./pages/ValidasiCapaian.jsx";
+import LaporanProdi from "./pages/LaporanProdi.jsx";
+import LaporanAudit from "./pages/LaporanAudit.jsx";
 
 const router = createBrowserRouter([
   {
@@ -36,34 +36,34 @@ const router = createBrowserRouter([
         path: "/standar-substandar",
         element: <StandarSubstandar />,
       },
-      // {
-      //   path: "/target-indikator",
-      //   element: <TargetIndikator />,
-      // },
-      // {
-      //   path: "/tahun-akademik-periode",
-      //   element: <TahunAkademikPeriode />,
-      // },
-      // {
-      //   path: "/evaluasi",
-      //   element: <Evaluasi />,
-      // },
-      // {
-      //   path: "/input-capaian",
-      //   element: <InputCapaian />,
-      // },
-      // {
-      //   path: "/validasi-capaian",
-      //   element: <ValidasiCapaian />,
-      // },
-      // {
-      //   path: "/laporan-prodi",
-      //   element: <LaporanProdi />,
-      // },
-      // {
-      //   path: "/laporan-audit",
-      //   element: <LaporanAudit />,
-      // },
+      {
+        path: "/target-indikator",
+        element: <TargetIndikator />,
+      },
+      {
+        path: "/tahun-periode",
+        element: <TahunPeriode />,
+      },
+      {
+        path: "/evaluasi",
+        element: <Evaluasi />,
+      },
+      {
+        path: "/input-capaian",
+        element: <InputCapaian />,
+      },
+      {
+        path: "/validasi-capaian",
+        element: <ValidasiCapaian />,
+      },
+      {
+        path: "/laporan-prodi",
+        element: <LaporanProdi />,
+      },
+      {
+        path: "/laporan-audit",
+        element: <LaporanAudit />,
+      },
     ],
   },
 ]);
