@@ -188,45 +188,6 @@ const SideBar = ({ isOpen, closeSidebar }) => {
               </ul>
             )}
           </li>
-
-          {/* Only show Pengguna menu for admin */}
-          {userRole === "admin" && (
-            <li>
-              <Link
-                to="/pengguna"
-                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-                onClick={handleLinkClick}
-              >
-                <FiUsers className="mr-2 text-black" />
-                Pengguna
-              </Link>
-            </li>
-          )}
-
-          <li>
-            <Link
-              to="/matakuliah"
-              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-              onClick={handleLinkClick}
-            >
-              <FiBook className="mr-2 text-black" />
-              Mata Kuliah
-            </Link>
-          </li>
-
-          {/* Menu Arsip Data - Hanya untuk admin dan kaprodi */}
-          {(userRole === "admin" || userRole === "kaprodi") && (
-            <li>
-              <Link
-                to="/arsip"
-                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-                onClick={handleLinkClick}
-              >
-                <FiArchive className="mr-2 text-black" />
-                Arsip Data
-              </Link>
-            </li>
-          )}
         </ul>
       </nav>
     </aside>
