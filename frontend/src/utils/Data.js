@@ -104,8 +104,9 @@ export const dataUser = [
         id: 1,
         role: "spmi", // Unit SPMI
         name: "Admin SPMI",
-        email: "admin.spmi@university.ac.id",
-        password: "spmi123" // contoh, nanti di-hash di backend
+        // email: "admin.spmi@university.ac.id",
+        email: "admin@gmail.com",
+        password: "123" // contoh, nanti di-hash di backend
     },
     {
         id: 2,
