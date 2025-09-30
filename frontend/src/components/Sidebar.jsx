@@ -164,7 +164,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
               <ul className="ml-8 mt-2 space-y-2">
                 <li>
                   <Link
-                    to="/admin/laporan-prodi"
+                    to="/laporan-prodi"
                     className="flex items-center p-2 rounded-lg hover:bg-red-50"
                     onClick={handleLinkClick}
                   >
@@ -174,7 +174,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
                 </li>
                 <li>
                   <Link
-                    to="/admin/laporan-audit"
+                    to="/laporan-audit"
                     className="flex items-center p-2 rounded-lg hover:bg-red-50"
                     onClick={handleLinkClick}
                   >
