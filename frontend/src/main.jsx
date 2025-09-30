@@ -5,8 +5,8 @@ import "./index.css";
 import App from "./App.jsx";
 import Login from "./pages/Login.jsx";
 import NotFound from "./pages/NotFound.jsx";
-// import Dashboard from "./pages/Dashboard.jsx";
-// import StandarSubstandar from "./pages/StandarSubstandar.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import StandarSubstandar from "./pages/StandarSubstandar.jsx";
 // import TargetIndikator from "./pages/TargetIndikator.jsx";
 // import TahunAkademikPeriode from "./pages/TahunAkademikPeriode.jsx";
 // import InputCapaian from "./pages/InputCapaian.jsx";
@@ -22,20 +22,20 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
+    element: <Login />,
+  },
+  {
+    path: "/",
     element: <App />,
     children: [
       {
-        path: "/",
-        element: <Login />,
+        path: "/dashboard",
+        element: <Dashboard />,
       },
-      // {
-      //   path: "/dashboard",
-      //   element: <Dashboard />,
-      // },
-      // {
-      //   path: "/standar-substandar",
-      //   element: <StandarSubstandar />,
-      // },
+      {
+        path: "/standar-substandar",
+        element: <StandarSubstandar />,
+      },
       // {
       //   path: "/target-indikator",
       //   element: <TargetIndikator />,
