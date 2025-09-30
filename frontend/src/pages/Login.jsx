@@ -70,7 +70,7 @@ function Login() {
 
         // Redirect after delay
         setTimeout(() => {
-          navigate("/admin/dashboard");
+          navigate("/dashboard");
         }, 2000);
       } else {
         // Show error alert
