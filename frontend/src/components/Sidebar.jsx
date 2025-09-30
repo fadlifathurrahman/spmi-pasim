@@ -12,6 +12,7 @@ import {
   FiCheckSquare,
   FiFileText,
   FiTrendingUp,
+  FiUserCheck,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
@@ -135,14 +136,16 @@ const SideBar = ({ isOpen, closeSidebar }) => {
           </li>
 
           {/* Validasi Capaian */}
-          {(userRole === "admin" || userRole === "kaprodi") && (
+          {(userRole === "admin" ||
+            userRole === "kaprodi" ||
+            userRole === "spmi") && (
             <li>
               <Link
-                to="/admin/validasi-capaian"
+                to="/validasi-capaian"
                 className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
                 onClick={handleLinkClick}
               >
-                <FiCheckSquare className="mr-2 text-black" />
+                <FiUserCheck className="mr-2 text-black" />
                 Validasi Capaian
               </Link>
             </li>
@@ -185,6 +188,45 @@ const SideBar = ({ isOpen, closeSidebar }) => {
               </ul>
             )}
           </li>
+
+          {/* Only show Pengguna menu for admin */}
+          {userRole === "admin" && (
+            <li>
+              <Link
+                to="/pengguna"
+                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+                onClick={handleLinkClick}
+              >
+                <FiUsers className="mr-2 text-black" />
+                Pengguna
+              </Link>
+            </li>
+          )}
+
+          <li>
+            <Link
+              to="/matakuliah"
+              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              onClick={handleLinkClick}
+            >
+              <FiBook className="mr-2 text-black" />
+              Mata Kuliah
+            </Link>
+          </li>
+
+          {/* Menu Arsip Data - Hanya untuk admin dan kaprodi */}
+          {(userRole === "admin" || userRole === "kaprodi") && (
+            <li>
+              <Link
+                to="/arsip"
+                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+                onClick={handleLinkClick}
+              >
+                <FiArchive className="mr-2 text-black" />
+                Arsip Data
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
     </aside>
