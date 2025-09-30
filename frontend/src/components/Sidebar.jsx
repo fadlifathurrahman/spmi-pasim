@@ -65,7 +65,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
           {/* Dashboard */}
           <li>
             <Link
-              to="/admin/dashboard"
+              to="/dashboard"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
               onClick={handleLinkClick}
             >
@@ -77,7 +77,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
           {/* Standar & Substandar */}
           <li>
             <Link
-              to="/admin/standar-substandar"
+              to="/standar-substandar"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
               onClick={handleLinkClick}
             >
@@ -89,7 +89,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
           {/* Target & Indikator */}
           <li>
             <Link
-              to="/admin/target-indikator"
+              to="/target-indikator"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
               onClick={handleLinkClick}
             >
@@ -101,7 +101,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
           {/* Tahun & Periode */}
           <li>
             <Link
-              to="/admin/tahun-periode"
+              to="/tahun-periode"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
               onClick={handleLinkClick}
             >
@@ -113,7 +113,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
           {/* Evaluasi */}
           <li>
             <Link
-              to="/admin/evaluasi"
+              to="/evaluasi"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
               onClick={handleLinkClick}
             >
@@ -125,7 +125,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
           {/* Input Capaian */}
           <li>
             <Link
-              to="/admin/input-capaian"
+              to="/input-capaian"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
               onClick={handleLinkClick}
             >
@@ -185,45 +185,6 @@ const SideBar = ({ isOpen, closeSidebar }) => {
               </ul>
             )}
           </li>
-
-          {/* Only show Pengguna menu for admin */}
-          {userRole === "admin" && (
-            <li>
-              <Link
-                to="/admin/pengguna"
-                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-                onClick={handleLinkClick}
-              >
-                <FiUsers className="mr-2 text-black" />
-                Pengguna
-              </Link>
-            </li>
-          )}
-
-          <li>
-            <Link
-              to="/admin/matakuliah"
-              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-              onClick={handleLinkClick}
-            >
-              <FiBook className="mr-2 text-black" />
-              Mata Kuliah
-            </Link>
-          </li>
-
-          {/* Menu Arsip Data - Hanya untuk admin dan kaprodi */}
-          {(userRole === "admin" || userRole === "kaprodi") && (
-            <li>
-              <Link
-                to="/admin/arsip"
-                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-                onClick={handleLinkClick}
-              >
-                <FiArchive className="mr-2 text-black" />
-                Arsip Data
-              </Link>
-            </li>
-          )}
         </ul>
       </nav>
     </aside>
