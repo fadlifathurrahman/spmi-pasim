@@ -5,16 +5,18 @@ import {
   FiBarChart2,
   FiChevronDown,
   FiChevronRight,
-  FiUser,
-  FiLogOut,
   FiBook,
-  FiArchive, // Tambahkan ikon Arsip
+  FiArchive,
+  FiTarget,
+  FiCalendar,
+  FiCheckSquare,
+  FiFileText,
+  FiTrendingUp,
 } from "react-icons/fi";
-import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const SideBar = ({ isOpen }) => {
-  const [isAccountOpen, setIsAccountOpen] = useState(false);
+const SideBar = ({ isOpen, closeSidebar }) => {
+  const [isLaporanOpen, setIsLaporanOpen] = useState(false);
   const [userRole, setUserRole] = useState("admin");
 
   useEffect(() => {
@@ -23,6 +25,12 @@ const SideBar = ({ isOpen }) => {
       setUserRole(currentUser.role);
     }
   }, []);
+
+  const handleLinkClick = () => {
+    if (window.innerWidth < 768) {
+      closeSidebar();
+    }
+  };
 
   return (
     <aside
@@ -54,53 +62,128 @@ const SideBar = ({ isOpen }) => {
       {/* Menu Items */}
       <nav className="p-4">
         <ul className="space-y-2">
-          {/* Menu Akun */}
-          <li>
-            <button
-              onClick={() => setIsAccountOpen(!isAccountOpen)}
-              className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-red-50 font-medium"
-            >
-              <div className="flex items-center">
-                <FaUserCircle className="mr-2 text-black" />
-                <span>Akun</span>
-              </div>
-              {isAccountOpen ? <FiChevronDown /> : <FiChevronRight />}
-            </button>
-            {isAccountOpen && (
-              <ul className="ml-8 mt-2 space-y-2">
-                <li>
-                  <Link
-                    to="/admin/profil"
-                    className="flex items-center p-2 rounded-lg hover:bg-red-50"
-                  >
-                    <FiUser className="mr-2 text-black" />
-                    Profil
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      window.location.href = "/";
-                      localStorage.removeItem("currentUser");
-                    }}
-                    className="flex items-center w-full p-2 rounded-lg hover:bg-red-50"
-                  >
-                    <FiLogOut className="mr-2 text-black" />
-                    Keluar
-                  </button>
-                </li>
-              </ul>
-            )}
-          </li>
-
+          {/* Dashboard */}
           <li>
             <Link
               to="/admin/dashboard"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              onClick={handleLinkClick}
             >
               <FiHome className="mr-2 text-black" />
               Dashboard
             </Link>
+          </li>
+
+          {/* Standar & Substandar */}
+          <li>
+            <Link
+              to="/admin/standar-substandar"
+              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              onClick={handleLinkClick}
+            >
+              <FiFileText className="mr-2 text-black" />
+              Standar & Substandar
+            </Link>
+          </li>
+
+          {/* Target & Indikator */}
+          <li>
+            <Link
+              to="/admin/target-indikator"
+              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              onClick={handleLinkClick}
+            >
+              <FiTarget className="mr-2 text-black" />
+              Target & Indikator
+            </Link>
+          </li>
+
+          {/* Tahun & Periode */}
+          <li>
+            <Link
+              to="/admin/tahun-periode"
+              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              onClick={handleLinkClick}
+            >
+              <FiCalendar className="mr-2 text-black" />
+              Tahun & Periode
+            </Link>
+          </li>
+
+          {/* Evaluasi */}
+          <li>
+            <Link
+              to="/admin/evaluasi"
+              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              onClick={handleLinkClick}
+            >
+              <FiTrendingUp className="mr-2 text-black" />
+              Evaluasi
+            </Link>
+          </li>
+
+          {/* Input Capaian */}
+          <li>
+            <Link
+              to="/admin/input-capaian"
+              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              onClick={handleLinkClick}
+            >
+              <FiCheckSquare className="mr-2 text-black" />
+              Input Capaian
+            </Link>
+          </li>
+
+          {/* Validasi Capaian */}
+          {(userRole === "admin" || userRole === "kaprodi") && (
+            <li>
+              <Link
+                to="/admin/validasi-capaian"
+                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+                onClick={handleLinkClick}
+              >
+                <FiCheckSquare className="mr-2 text-black" />
+                Validasi Capaian
+              </Link>
+            </li>
+          )}
+
+          {/* Menu Laporan */}
+          <li>
+            <button
+              onClick={() => setIsLaporanOpen(!isLaporanOpen)}
+              className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-red-50 font-medium"
+            >
+              <div className="flex items-center">
+                <FiBarChart2 className="mr-2 text-black" />
+                <span>Laporan</span>
+              </div>
+              {isLaporanOpen ? <FiChevronDown /> : <FiChevronRight />}
+            </button>
+            {isLaporanOpen && (
+              <ul className="ml-8 mt-2 space-y-2">
+                <li>
+                  <Link
+                    to="/admin/laporan-prodi"
+                    className="flex items-center p-2 rounded-lg hover:bg-red-50"
+                    onClick={handleLinkClick}
+                  >
+                    <FiBarChart2 className="mr-2 text-black" />
+                    Laporan Prodi
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/laporan-audit"
+                    className="flex items-center p-2 rounded-lg hover:bg-red-50"
+                    onClick={handleLinkClick}
+                  >
+                    <FiBarChart2 className="mr-2 text-black" />
+                    Laporan Audit
+                  </Link>
+                </li>
+              </ul>
+            )}
           </li>
 
           {/* Only show Pengguna menu for admin */}
@@ -109,6 +192,7 @@ const SideBar = ({ isOpen }) => {
               <Link
                 to="/admin/pengguna"
                 className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+                onClick={handleLinkClick}
               >
                 <FiUsers className="mr-2 text-black" />
                 Pengguna
@@ -120,19 +204,10 @@ const SideBar = ({ isOpen }) => {
             <Link
               to="/admin/matakuliah"
               className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              onClick={handleLinkClick}
             >
               <FiBook className="mr-2 text-black" />
               Mata Kuliah
-            </Link>
-          </li>
-
-          <li>
-            <Link
-              to="/admin/laporan"
-              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-            >
-              <FiBarChart2 className="mr-2 text-black" />
-              Laporan
             </Link>
           </li>
 
@@ -142,6 +217,7 @@ const SideBar = ({ isOpen }) => {
               <Link
                 to="/admin/arsip"
                 className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+                onClick={handleLinkClick}
               >
                 <FiArchive className="mr-2 text-black" />
                 Arsip Data
