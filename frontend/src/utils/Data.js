@@ -52,42 +52,52 @@ export const targetData = [
 export const capaianData = [
     {
         id: 1,
-        pencapaian: "Visi dan misi sudah disosialisasikan ke 90% dosen dan mahasiswa",
-        tingkat_capaian: "90% Sesuai",
-        id_periode: 1,
-        id_prodi: 1,
+        deskripsi: "90% Sesuai",
         status: "tampil"
     },
     {
         id: 2,
-        pencapaian: "Tujuan strategis sudah dilaksanakan di 75% unit",
-        tingkat_capaian: "75% Sesuai",
-        id_periode: 1,
-        id_prodi: 2,
+        deskripsi: "75% Sesuai",
         status: "tampil"
     },
     {
         id: 3,
-        pencapaian: "Struktur organisasi sudah efektif dengan rapat rutin",
-        tingkat_capaian: "Data Tersedia",
-        id_periode: 2,
-        id_prodi: 3,
+        deskripsi: "Tersedia",
         status: "tampil"
     },
     {
         id: 4,
-        pencapaian: "Sudah ada 4 MoU dengan universitas dalam negeri",
-        tingkat_capaian: "80% Sesuai",
-        id_periode: 2,
-        id_prodi: 4,
+        deskripsi: "80% Sesuai",
         status: "tampil"
     },
     {
         id: 5,
-        pencapaian: "Seleksi mahasiswa baru dilakukan secara daring",
-        tingkat_capaian: "Data Tersedia",
-        id_periode: 3,
-        id_prodi: 1,
+        deskripsi: "Tersedia",
+        status: "tampil"
+    },
+    {
+        id: 6,
+        deskripsi: "≥ 60%",
+        status: "tampil"
+    },
+    {
+        id: 7,
+        deskripsi: "Terlaksana",
+        status: "tampil"
+    },
+    {
+        id: 8,
+        deskripsi: "50% Sesuai",
+        status: "tampil"
+    },
+    {
+        id: 9,
+        deskripsi: "Tidak Tersedia",
+        status: "tampil"
+    },
+    {
+        id: 10,
+        deskripsi: "100% Sesuai",
         status: "tampil"
     }
 ];
