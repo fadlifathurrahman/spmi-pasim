@@ -148,12 +148,14 @@ const TargetIndikator = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Target & Indikator</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Target, Indikator & Capaian
+        </h1>
         <p className="text-gray-600 mt-2">
           Kelola target, indikator, dan capaian kinerja untuk Sistem Peningkatan
           Mutu Internal
         </p>
-        <div className="w-20 h-1 bg-red-500 mt-2 rounded-full"></div>
+        <div className="w-32 h-1 bg-red-500 mt-2 rounded-full"></div>
       </div>
 
       {/* Summary Cards */}
