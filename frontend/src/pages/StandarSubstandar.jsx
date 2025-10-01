@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import {
   FiPlus,
   FiEdit,
-  FiTrash2,
   FiSave,
   FiX,
   FiFileText,
   FiBook,
+  FiArchive,
+  FiEye,
+  FiChevronDown,
 } from "react-icons/fi";
 
 // Import data
@@ -44,12 +46,12 @@ const StandarSubstandar = () => {
     setFormData({ ...formData, nama_standar: standar.nama_standar });
   };
 
-  const handleDeleteStandar = (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus standar ini?")) {
-      setStandars(standars.filter((standar) => standar.id !== id));
-      // Juga hapus substandar yang terkait
-      setSubstandars(substandars.filter((sub) => sub.id_standar !== id));
-    }
+  const handleStatusStandar = (id, newStatus) => {
+    setStandars(
+      standars.map((standar) =>
+        standar.id === id ? { ...standar, status: newStatus } : standar
+      )
+    );
   };
 
   const handleSaveStandar = () => {
@@ -75,6 +77,7 @@ const StandarSubstandar = () => {
         {
           id: newId,
           nama_standar: formData.nama_standar,
+          status: "tampil",
         },
       ]);
     }
@@ -100,10 +103,12 @@ const StandarSubstandar = () => {
     });
   };
 
-  const handleDeleteSubstandar = (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus substandar ini?")) {
-      setSubstandars(substandars.filter((sub) => sub.id !== id));
-    }
+  const handleStatusSubstandar = (id, newStatus) => {
+    setSubstandars(
+      substandars.map((substandar) =>
+        substandar.id === id ? { ...substandar, status: newStatus } : substandar
+      )
+    );
   };
 
   const handleSaveSubstandar = () => {
@@ -134,6 +139,7 @@ const StandarSubstandar = () => {
           id: newId,
           nama_substandar: formData.nama_substandar,
           id_standar: parseInt(formData.id_standar),
+          status: "tampil",
         },
       ]);
     }
@@ -146,6 +152,23 @@ const StandarSubstandar = () => {
     const standar = standars.find((s) => s.id === id_standar);
     return standar ? standar.nama_standar : "Standar tidak ditemukan";
   };
+
+  // Fungsi untuk mendapatkan style dropdown berdasarkan status
+  const getDropdownStyle = (status) => {
+    if (status === "tampil") {
+      return "bg-green-50 text-green-700 border-green-200 hover:bg-green-100";
+    } else {
+      return "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100";
+    }
+  };
+
+  // Filter data yang hanya status tampil
+  const standarsTampil = standars.filter(
+    (standar) => standar.status === "tampil"
+  );
+  const substandarsTampil = substandars.filter(
+    (sub) => sub.status === "tampil"
+  );
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -167,10 +190,8 @@ const StandarSubstandar = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Total Standar</p>
-              <p className="text-2xl font-bold mt-1">{standars.length}</p>
-              <p className="text-xs opacity-80 mt-1">
-                Standar mutu yang tersedia
-              </p>
+              <p className="text-2xl font-bold mt-1">{standarsTampil.length}</p>
+              <p className="text-xs opacity-80 mt-1">Standar mutu yang aktif</p>
             </div>
             <FiFileText className="text-2xl opacity-80" />
           </div>
@@ -180,10 +201,10 @@ const StandarSubstandar = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Total Substandar</p>
-              <p className="text-2xl font-bold mt-1">{substandars.length}</p>
-              <p className="text-xs opacity-80 mt-1">
-                Substandar yang terdaftar
+              <p className="text-2xl font-bold mt-1">
+                {substandarsTampil.length}
               </p>
+              <p className="text-xs opacity-80 mt-1">Substandar yang aktif</p>
             </div>
             <FiBook className="text-2xl opacity-80" />
           </div>
@@ -285,11 +306,13 @@ const StandarSubstandar = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   <option value="">Pilih Standar</option>
-                  {standars.map((standar) => (
-                    <option key={standar.id} value={standar.id}>
-                      {standar.nama_standar}
-                    </option>
-                  ))}
+                  {standars
+                    .filter((s) => s.status === "tampil")
+                    .map((standar) => (
+                      <option key={standar.id} value={standar.id}>
+                        {standar.nama_standar}
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>
@@ -359,18 +382,39 @@ const StandarSubstandar = () => {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleEditStandar(standar)}
-                          className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                          className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
                           title="Edit Standar"
                         >
-                          <FiEdit className="text-lg" />
+                          <FiEdit className="mr-1" />
+                          Edit
                         </button>
-                        <button
-                          onClick={() => handleDeleteStandar(standar.id)}
-                          className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
-                          title="Hapus Standar"
-                        >
-                          <FiTrash2 className="text-lg" />
-                        </button>
+                        <div className="relative">
+                          <select
+                            value={standar.status}
+                            onChange={(e) =>
+                              handleStatusStandar(standar.id, e.target.value)
+                            }
+                            className={`appearance-none flex items-center px-3 py-1 border rounded-lg transition-colors duration-200 text-sm cursor-pointer ${getDropdownStyle(
+                              standar.status
+                            )}`}
+                          >
+                            <option
+                              value="tampil"
+                              className="bg-white text-gray-900"
+                            >
+                              <FiEye className="inline mr-1" />
+                              Tampil
+                            </option>
+                            <option
+                              value="diarsipkan"
+                              className="bg-white text-gray-900"
+                            >
+                              <FiArchive className="inline mr-1" />
+                              Diarsipkan
+                            </option>
+                          </select>
+                          <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -444,18 +488,42 @@ const StandarSubstandar = () => {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleEditSubstandar(substandar)}
-                          className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                          className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
                           title="Edit Substandar"
                         >
-                          <FiEdit className="text-lg" />
+                          <FiEdit className="mr-1" />
+                          Edit
                         </button>
-                        <button
-                          onClick={() => handleDeleteSubstandar(substandar.id)}
-                          className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
-                          title="Hapus Substandar"
-                        >
-                          <FiTrash2 className="text-lg" />
-                        </button>
+                        <div className="relative">
+                          <select
+                            value={substandar.status}
+                            onChange={(e) =>
+                              handleStatusSubstandar(
+                                substandar.id,
+                                e.target.value
+                              )
+                            }
+                            className={`appearance-none flex items-center px-3 py-1 border rounded-lg transition-colors duration-200 text-sm cursor-pointer ${getDropdownStyle(
+                              substandar.status
+                            )}`}
+                          >
+                            <option
+                              value="tampil"
+                              className="bg-white text-gray-900"
+                            >
+                              <FiEye className="inline mr-1" />
+                              Tampil
+                            </option>
+                            <option
+                              value="diarsipkan"
+                              className="bg-white text-gray-900"
+                            >
+                              <FiArchive className="inline mr-1" />
+                              Diarsipkan
+                            </option>
+                          </select>
+                          <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+                        </div>
                       </div>
                     </td>
                   </tr>
