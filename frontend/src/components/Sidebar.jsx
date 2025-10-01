@@ -95,7 +95,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
               onClick={handleLinkClick}
             >
               <FiTarget className="mr-2 text-black" />
-              Target & Indikator
+              Target, Indikator & Capaian
             </Link>
           </li>
 
