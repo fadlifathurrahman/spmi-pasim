@@ -10,8 +10,6 @@ import {
   FiTarget,
   FiCalendar,
 } from "react-icons/fi";
-
-// Import data dari Data.js
 import {
   standarData,
   substandarData,
@@ -19,6 +17,7 @@ import {
   capaianData,
   tahunAkademikData,
   prodiData,
+  periodeData,
 } from "./../utils/Data.js";
 
 const Dashboard = () => {
@@ -32,8 +31,15 @@ const Dashboard = () => {
     totalProdi: 0,
   });
 
+  // State dropdown tahun akademik
+  const [selectedTahun, setSelectedTahun] = useState(
+    tahunAkademikData[tahunAkademikData.length - 1]?.rentang
+  );
+
+  // State untuk capaian universitas
+  const [capaianUniversitas, setCapaianUniversitas] = useState(0);
+
   useEffect(() => {
-    // Hitung data untuk dashboard
     const totalStandar = standarData.length;
     const totalSubstandar = substandarData.length;
     const evaluasiAktif = evaluasiData.length;
@@ -56,56 +62,44 @@ const Dashboard = () => {
     });
   }, []);
 
-  const StatCard = ({ title, value, icon: Icon, subtitle }) => (
-    <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500 hover:shadow-lg transition-shadow duration-200">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-          {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
-        </div>
-        <div className="p-3 rounded-full bg-red-100 text-red-600">
-          <Icon className="text-xl" />
-        </div>
-      </div>
-    </div>
-  );
-
-  const ProgressCard = ({ title, completed, total }) => {
-    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-    return (
-      <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-gray-600">
-            {completed} dari {total} selesai
-          </span>
-          <span className="text-sm font-medium text-red-600">
-            {percentage}%
-          </span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className="h-2 rounded-full bg-red-500 transition-all duration-300"
-            style={{ width: `${percentage}%` }}
-          ></div>
-        </div>
-      </div>
+  // Hitung capaian universitas berdasarkan tahun yang dipilih
+  useEffect(() => {
+    const tahunDipilih = tahunAkademikData.find(
+      (t) => t.rentang === selectedTahun
     );
+    if (tahunDipilih) {
+      const periodeTahun = periodeData.filter(
+        (p) => p.id_tahunakademik === tahunDipilih.id
+      );
+      const evaluasiTahun = evaluasiData.filter((e) =>
+        periodeTahun.some((p) => p.id === e.id_periode)
+      );
+
+      // hitung persentase (contoh sederhana)
+      const total = evaluasiTahun.length;
+      const selesai = evaluasiTahun.filter((_, idx) => idx % 2 === 0).length;
+      const persen = total > 0 ? Math.round((selesai / total) * 100) : 0;
+
+      setCapaianUniversitas(persen);
+    }
+  }, [selectedTahun]);
+
+  // Fungsi untuk mendapatkan warna berdasarkan persentase
+  const getProgressColor = (percentage) => {
+    if (percentage >= 90) return "bg-green-500";
+    if (percentage >= 80) return "bg-blue-500";
+    if (percentage >= 70) return "bg-yellow-500";
+    if (percentage >= 60) return "bg-orange-500";
+    return "bg-red-500";
   };
 
-  const QuickActionButton = ({ icon: Icon, label, onClick }) => (
-    <button
-      onClick={onClick}
-      className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-all duration-200 group"
-    >
-      <Icon className="text-red-600 text-xl mb-2 group-hover:scale-110 transition-transform" />
-      <span className="text-sm font-medium text-gray-700 group-hover:text-red-700">
-        {label}
-      </span>
-    </button>
-  );
+  // Data capaian per prodi
+  const capaianProdi = [
+    { nama: "Teknik Informatika", persentase: 85 },
+    { nama: "Sistem Informasi", persentase: 72 },
+    { nama: "Manajemen", persentase: 68 },
+    { nama: "Akuntansi", persentase: 91 },
+  ];
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -113,205 +107,197 @@ const Dashboard = () => {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Dashboard SPMI</h1>
         <p className="text-gray-600 mt-2">
-          Sistem Peningkatan Mutu Internal - Program Studi Teknik Informatika
+          Ringkasan sistem penjaminan mutu internal universitas
         </p>
         <div className="w-20 h-1 bg-red-500 mt-2 rounded-full"></div>
       </div>
 
-      {/* Ringkasan Statistik */}
+      {/* Statistik */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatCard
-          title="Total Standar"
-          value={dashboardData.totalStandar}
-          icon={FiFileText}
-          subtitle="Standar mutu"
-        />
-        <StatCard
-          title="Evaluasi Aktif"
-          value={dashboardData.evaluasiAktif}
-          icon={FiTrendingUp}
-          subtitle="Proses evaluasi"
-        />
-        <StatCard
-          title="Capaian Tervalidasi"
-          value={dashboardData.capaianValid}
-          icon={FiCheckCircle}
-          subtitle="Data valid"
-        />
-        <StatCard
-          title="Perlu Validasi"
-          value={dashboardData.capaianBelumValid}
-          icon={FiClock}
-          subtitle="Menunggu validasi"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Progress Section */}
-        <div className="space-y-6">
-          <ProgressCard
-            title="Progress Evaluasi Standar"
-            completed={dashboardData.evaluasiAktif}
-            total={dashboardData.totalSubstandar}
-          />
-
-          <ProgressCard
-            title="Validasi Capaian"
-            completed={dashboardData.capaianValid}
-            total={dashboardData.capaianValid + dashboardData.capaianBelumValid}
-          />
-
-          {/* Informasi Tambahan */}
-          <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <FiBarChart2 className="mr-2 text-red-500" />
-              Informasi Sistem
-            </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="text-gray-600 flex items-center">
-                  <FiCalendar className="mr-2 text-red-500" />
-                  Tahun Akademik Aktif
-                </span>
-                <span className="font-medium text-red-600 bg-red-50 px-2 py-1 rounded">
-                  {dashboardData.tahunAktif}
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="text-gray-600 flex items-center">
-                  <FiUsers className="mr-2 text-red-500" />
-                  Total Program Studi
-                </span>
-                <span className="font-medium text-gray-900">
-                  {dashboardData.totalProdi}
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600 flex items-center">
-                  <FiFileText className="mr-2 text-red-500" />
-                  Total Substandar
-                </span>
-                <span className="font-medium text-gray-900">
-                  {dashboardData.totalSubstandar}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Aktivitas Terbaru */}
-        <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <FiTrendingUp className="mr-2 text-red-500" />
-            Aktivitas Terbaru
-          </h3>
-          <div className="space-y-4">
-            {evaluasiData.slice(0, 5).map((evaluasi, index) => (
-              <div
-                key={evaluasi.id}
-                className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors duration-200 border-l-2 border-red-300"
-              >
-                <div className="p-2 rounded-full bg-red-100 text-red-600">
-                  <FiBarChart2 className="text-sm" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">
-                    Evaluasi standar #{evaluasi.id}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Periode {evaluasi.id_periode} • Substandar{" "}
-                    {evaluasi.id_substandar}
-                  </p>
-                </div>
-                <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    index % 2 === 0
-                      ? "bg-red-100 text-red-800 border border-red-200"
-                      : "bg-orange-100 text-orange-800 border border-orange-200"
-                  }`}
-                >
-                  {index % 2 === 0 ? "Selesai" : "Proses"}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 pt-4 border-t border-gray-200">
-            <button className="w-full text-center text-red-600 hover:text-red-800 text-sm font-medium flex items-center justify-center group">
-              Lihat Semua Aktivitas
-              <FiTrendingUp className="ml-2 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="mt-8 bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <FiTarget className="mr-2 text-red-500" />
-          Akses Cepat
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <QuickActionButton
-            icon={FiFileText}
-            label="Input Capaian"
-            onClick={() => console.log("Input Capaian clicked")}
-          />
-          <QuickActionButton
-            icon={FiCheckCircle}
-            label="Validasi"
-            onClick={() => console.log("Validasi clicked")}
-          />
-          <QuickActionButton
-            icon={FiBarChart2}
-            label="Laporan"
-            onClick={() => console.log("Laporan clicked")}
-          />
-          <QuickActionButton
-            icon={FiUsers}
-            label="Pengguna"
-            onClick={() => console.log("Pengguna clicked")}
-          />
-        </div>
-      </div>
-
-      {/* Additional Info Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md p-6 text-white">
+        {/* Total Standar */}
+        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium opacity-90">Standar Tersedia</p>
-              <p className="text-2xl font-bold mt-1">
+              <p className="text-sm text-gray-600">Total Standar</p>
+              <p className="text-2xl font-bold text-gray-900">
                 {dashboardData.totalStandar}
               </p>
             </div>
-            <FiFileText className="text-2xl opacity-80" />
+            <div className="p-3 rounded-full bg-red-100 text-red-600">
+              <FiFileText className="text-xl" />
+            </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-lg shadow-md p-6 text-white">
+        {/* Sub Standar */}
+        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium opacity-90">Substandar</p>
-              <p className="text-2xl font-bold mt-1">
+              <p className="text-sm text-gray-600">Sub Standar</p>
+              <p className="text-2xl font-bold text-gray-900">
                 {dashboardData.totalSubstandar}
               </p>
             </div>
-            <FiBook className="text-2xl opacity-80" />
+            <div className="p-3 rounded-full bg-blue-100 text-blue-600">
+              <FiBook className="text-xl" />
+            </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-red-700 to-red-800 rounded-lg shadow-md p-6 text-white">
+        {/* Indikator Terisi */}
+        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium opacity-90">
-                Evaluasi Berjalan
+              <p className="text-sm text-gray-600">Indikator Terisi</p>
+              <p className="text-2xl font-bold text-gray-900">78%</p>
+            </div>
+            <div className="p-3 rounded-full bg-green-100 text-green-600">
+              <FiBarChart2 className="text-xl" />
+            </div>
+          </div>
+        </div>
+
+        {/* Belum Verifikasi */}
+        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Belum Verifikasi</p>
+              <p className="text-2xl font-bold text-gray-900">12</p>
+            </div>
+            <div className="p-3 rounded-full bg-purple-100 text-purple-600">
+              <FiClock className="text-xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Capaian Universitas & Per Program Studi */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Capaian per Program Studi */}
+        <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+            <FiTarget className="mr-2 text-red-500" />
+            Capaian per Program Studi
+          </h3>
+          <div className="space-y-4">
+            {capaianProdi.map((prodi, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">
+                    {prodi.nama}
+                  </span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    {prodi.persentase}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    className={`h-2.5 rounded-full ${getProgressColor(
+                      prodi.persentase
+                    )} transition-all duration-500`}
+                    style={{ width: `${prodi.persentase}%` }}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Capaian Universitas dengan Dropdown */}
+        <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+              <FiTrendingUp className="mr-2 text-red-500" />
+              Capaian Universitas
+            </h3>
+            <div className="relative">
+              <select
+                value={selectedTahun}
+                onChange={(e) => setSelectedTahun(e.target.value)}
+                className="appearance-none bg-white border border-gray-300 rounded-lg px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors duration-200"
+              >
+                {tahunAkademikData.map((t) => (
+                  <option key={t.id} value={t.rentang}>
+                    {t.rentang}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg
+                  className="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center justify-center py-4">
+            {/* Circular Progress */}
+            <div className="relative w-32 h-32 mb-4">
+              <svg className="w-full h-full" viewBox="0 0 36 36">
+                {/* Background circle */}
+                <path
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#E5E7EB"
+                  strokeWidth="3"
+                />
+                {/* Progress circle */}
+                <path
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke={
+                    capaianUniversitas >= 70
+                      ? "#10B981"
+                      : capaianUniversitas >= 50
+                      ? "#F59E0B"
+                      : "#EF4444"
+                  }
+                  strokeWidth="3"
+                  strokeDasharray={`${capaianUniversitas}, 100`}
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-2xl font-bold text-gray-900">
+                  {capaianUniversitas}%
+                </span>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <p className="text-lg font-semibold text-gray-800">
+                Total Capaian SPMI
               </p>
-              <p className="text-2xl font-bold mt-1">
-                {dashboardData.evaluasiAktif}
+              <p className="text-sm text-gray-600 mt-1">
+                Data per Januari {selectedTahun.split("/")[1]}
               </p>
             </div>
-            <FiTrendingUp className="text-2xl opacity-80" />
+
+            {/* Progress Bar di bawah */}
+            <div className="w-full mt-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-gray-600">Progress Capaian</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {capaianUniversitas}%
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className={`h-2.5 rounded-full ${getProgressColor(
+                    capaianUniversitas
+                  )} transition-all duration-500`}
+                  style={{ width: `${capaianUniversitas}%` }}
+                ></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
