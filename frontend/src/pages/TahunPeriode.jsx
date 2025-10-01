@@ -308,36 +308,51 @@ const TahunPeriode = () => {
         <div className="w-20 h-1 bg-red-500 mt-2 rounded-full"></div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <button
-          onClick={handleAddTahun}
-          className="flex items-center justify-center px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-        >
-          <FiPlus className="mr-2" />
-          Tahun Akademik
-        </button>
-        <button
-          onClick={handleAddPeriode}
-          className="flex items-center justify-center px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-        >
-          <FiPlus className="mr-2" />
-          Periode
-        </button>
-        <button
-          onClick={handleAddFakultas}
-          className="flex items-center justify-center px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-        >
-          <FiPlus className="mr-2" />
-          Fakultas
-        </button>
-        <button
-          onClick={handleAddProdi}
-          className="flex items-center justify-center px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-        >
-          <FiPlus className="mr-2" />
-          Program Studi
-        </button>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium opacity-90">Tahun Akademik</p>
+              <p className="text-2xl font-bold mt-1">{tahunAkademik.length}</p>
+              <p className="text-xs opacity-80 mt-1">Tahun akademik tersedia</p>
+            </div>
+            <FiCalendar className="text-2xl opacity-80" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-lg shadow-md p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium opacity-90">Periode</p>
+              <p className="text-2xl font-bold mt-1">{periode.length}</p>
+              <p className="text-xs opacity-80 mt-1">Periode evaluasi aktif</p>
+            </div>
+            <FiBook className="text-2xl opacity-80" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-red-700 to-red-800 rounded-lg shadow-md p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium opacity-90">Fakultas</p>
+              <p className="text-2xl font-bold mt-1">{fakultas.length}</p>
+              <p className="text-xs opacity-80 mt-1">Fakultas yang terdaftar</p>
+            </div>
+            <FiUsers className="text-2xl opacity-80" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-red-800 to-red-900 rounded-lg shadow-md p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium opacity-90">Program Studi</p>
+              <p className="text-2xl font-bold mt-1">{prodi.length}</p>
+              <p className="text-xs opacity-80 mt-1">Program studi aktif</p>
+            </div>
+            <FiBook className="text-2xl opacity-80" />
+          </div>
+        </div>
       </div>
 
       {/* Form Modal Tahun Akademik */}
@@ -592,11 +607,18 @@ const TahunPeriode = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Tabel Tahun Akademik */}
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <FiCalendar className="mr-2 text-red-500" />
               Daftar Tahun Akademik
             </h3>
+            <button
+              onClick={handleAddTahun}
+              className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
+            >
+              <FiPlus className="mr-2" />
+              Tambah Tahun
+            </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -632,12 +654,14 @@ const TahunPeriode = () => {
                         <button
                           onClick={() => handleEditTahun(tahun)}
                           className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                          title="Edit Tahun Akademik"
                         >
                           <FiEdit className="text-lg" />
                         </button>
                         <button
                           onClick={() => handleDeleteTahun(tahun.id)}
                           className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
+                          title="Hapus Tahun Akademik"
                         >
                           <FiTrash2 className="text-lg" />
                         </button>
@@ -651,6 +675,12 @@ const TahunPeriode = () => {
               <div className="text-center py-8 text-gray-500">
                 <FiCalendar className="mx-auto text-3xl text-gray-300 mb-2" />
                 <p>Tidak ada data tahun akademik</p>
+                <button
+                  onClick={handleAddTahun}
+                  className="mt-2 text-red-600 hover:text-red-800 font-medium"
+                >
+                  Tambah tahun akademik pertama
+                </button>
               </div>
             )}
           </div>
@@ -658,11 +688,18 @@ const TahunPeriode = () => {
 
         {/* Tabel Periode */}
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <FiBook className="mr-2 text-red-500" />
               Daftar Periode
             </h3>
+            <button
+              onClick={handleAddPeriode}
+              className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
+            >
+              <FiPlus className="mr-2" />
+              Tambah Periode
+            </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -702,12 +739,14 @@ const TahunPeriode = () => {
                         <button
                           onClick={() => handleEditPeriode(periodeItem)}
                           className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                          title="Edit Periode"
                         >
                           <FiEdit className="text-lg" />
                         </button>
                         <button
                           onClick={() => handleDeletePeriode(periodeItem.id)}
                           className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
+                          title="Hapus Periode"
                         >
                           <FiTrash2 className="text-lg" />
                         </button>
@@ -721,6 +760,12 @@ const TahunPeriode = () => {
               <div className="text-center py-8 text-gray-500">
                 <FiBook className="mx-auto text-3xl text-gray-300 mb-2" />
                 <p>Tidak ada data periode</p>
+                <button
+                  onClick={handleAddPeriode}
+                  className="mt-2 text-red-600 hover:text-red-800 font-medium"
+                >
+                  Tambah periode pertama
+                </button>
               </div>
             )}
           </div>
@@ -728,11 +773,18 @@ const TahunPeriode = () => {
 
         {/* Tabel Fakultas */}
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <FiUsers className="mr-2 text-red-500" />
               Daftar Fakultas
             </h3>
+            <button
+              onClick={handleAddFakultas}
+              className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
+            >
+              <FiPlus className="mr-2" />
+              Tambah Fakultas
+            </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -766,12 +818,14 @@ const TahunPeriode = () => {
                         <button
                           onClick={() => handleEditFakultas(fakultasItem)}
                           className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                          title="Edit Fakultas"
                         >
                           <FiEdit className="text-lg" />
                         </button>
                         <button
                           onClick={() => handleDeleteFakultas(fakultasItem.id)}
                           className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
+                          title="Hapus Fakultas"
                         >
                           <FiTrash2 className="text-lg" />
                         </button>
@@ -785,6 +839,12 @@ const TahunPeriode = () => {
               <div className="text-center py-8 text-gray-500">
                 <FiUsers className="mx-auto text-3xl text-gray-300 mb-2" />
                 <p>Tidak ada data fakultas</p>
+                <button
+                  onClick={handleAddFakultas}
+                  className="mt-2 text-red-600 hover:text-red-800 font-medium"
+                >
+                  Tambah fakultas pertama
+                </button>
               </div>
             )}
           </div>
@@ -792,11 +852,18 @@ const TahunPeriode = () => {
 
         {/* Tabel Program Studi */}
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <FiBook className="mr-2 text-red-500" />
               Daftar Program Studi
             </h3>
+            <button
+              onClick={handleAddProdi}
+              className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
+            >
+              <FiPlus className="mr-2" />
+              Tambah Prodi
+            </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -836,12 +903,14 @@ const TahunPeriode = () => {
                         <button
                           onClick={() => handleEditProdi(prodiItem)}
                           className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                          title="Edit Program Studi"
                         >
                           <FiEdit className="text-lg" />
                         </button>
                         <button
                           onClick={() => handleDeleteProdi(prodiItem.id)}
                           className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
+                          title="Hapus Program Studi"
                         >
                           <FiTrash2 className="text-lg" />
                         </button>
@@ -855,53 +924,14 @@ const TahunPeriode = () => {
               <div className="text-center py-8 text-gray-500">
                 <FiBook className="mx-auto text-3xl text-gray-300 mb-2" />
                 <p>Tidak ada data program studi</p>
+                <button
+                  onClick={handleAddProdi}
+                  className="mt-2 text-red-600 hover:text-red-800 font-medium"
+                >
+                  Tambah program studi pertama
+                </button>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium opacity-90">
-                Total Tahun Akademik
-              </p>
-              <p className="text-2xl font-bold mt-1">{tahunAkademik.length}</p>
-            </div>
-            <FiCalendar className="text-2xl opacity-80" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-lg shadow-md p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium opacity-90">Total Periode</p>
-              <p className="text-2xl font-bold mt-1">{periode.length}</p>
-            </div>
-            <FiBook className="text-2xl opacity-80" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-red-700 to-red-800 rounded-lg shadow-md p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium opacity-90">Total Fakultas</p>
-              <p className="text-2xl font-bold mt-1">{fakultas.length}</p>
-            </div>
-            <FiUsers className="text-2xl opacity-80" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-red-800 to-red-900 rounded-lg shadow-md p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium opacity-90">Total Prodi</p>
-              <p className="text-2xl font-bold mt-1">{prodi.length}</p>
-            </div>
-            <FiBook className="text-2xl opacity-80" />
           </div>
         </div>
       </div>

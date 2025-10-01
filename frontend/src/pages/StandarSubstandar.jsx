@@ -161,22 +161,33 @@ const StandarSubstandar = () => {
         <div className="w-20 h-1 bg-red-500 mt-2 rounded-full"></div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-4 mb-8">
-        <button
-          onClick={handleAddStandar}
-          className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-        >
-          <FiPlus className="mr-2" />
-          Tambah Standar
-        </button>
-        <button
-          onClick={handleAddSubstandar}
-          className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-        >
-          <FiPlus className="mr-2" />
-          Tambah Substandar
-        </button>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium opacity-90">Total Standar</p>
+              <p className="text-2xl font-bold mt-1">{standars.length}</p>
+              <p className="text-xs opacity-80 mt-1">
+                Standar mutu yang tersedia
+              </p>
+            </div>
+            <FiFileText className="text-2xl opacity-80" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-lg shadow-md p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium opacity-90">Total Substandar</p>
+              <p className="text-2xl font-bold mt-1">{substandars.length}</p>
+              <p className="text-xs opacity-80 mt-1">
+                Substandar yang terdaftar
+              </p>
+            </div>
+            <FiBook className="text-2xl opacity-80" />
+          </div>
+        </div>
       </div>
 
       {/* Form Modal Standar */}
@@ -304,11 +315,18 @@ const StandarSubstandar = () => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Tabel Standar */}
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <FiFileText className="mr-2 text-red-500" />
               Daftar Standar
             </h3>
+            <button
+              onClick={handleAddStandar}
+              className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
+            >
+              <FiPlus className="mr-2" />
+              Tambah Standar
+            </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -342,12 +360,14 @@ const StandarSubstandar = () => {
                         <button
                           onClick={() => handleEditStandar(standar)}
                           className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                          title="Edit Standar"
                         >
                           <FiEdit className="text-lg" />
                         </button>
                         <button
                           onClick={() => handleDeleteStandar(standar.id)}
                           className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
+                          title="Hapus Standar"
                         >
                           <FiTrash2 className="text-lg" />
                         </button>
@@ -361,6 +381,12 @@ const StandarSubstandar = () => {
               <div className="text-center py-8 text-gray-500">
                 <FiFileText className="mx-auto text-3xl text-gray-300 mb-2" />
                 <p>Tidak ada data standar</p>
+                <button
+                  onClick={handleAddStandar}
+                  className="mt-2 text-red-600 hover:text-red-800 font-medium"
+                >
+                  Tambah standar pertama
+                </button>
               </div>
             )}
           </div>
@@ -368,11 +394,18 @@ const StandarSubstandar = () => {
 
         {/* Tabel Substandar */}
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <FiBook className="mr-2 text-red-500" />
               Daftar Substandar
             </h3>
+            <button
+              onClick={handleAddSubstandar}
+              className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
+            >
+              <FiPlus className="mr-2" />
+              Tambah Substandar
+            </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -412,12 +445,14 @@ const StandarSubstandar = () => {
                         <button
                           onClick={() => handleEditSubstandar(substandar)}
                           className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
+                          title="Edit Substandar"
                         >
                           <FiEdit className="text-lg" />
                         </button>
                         <button
                           onClick={() => handleDeleteSubstandar(substandar.id)}
                           className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
+                          title="Hapus Substandar"
                         >
                           <FiTrash2 className="text-lg" />
                         </button>
@@ -431,31 +466,14 @@ const StandarSubstandar = () => {
               <div className="text-center py-8 text-gray-500">
                 <FiBook className="mx-auto text-3xl text-gray-300 mb-2" />
                 <p>Tidak ada data substandar</p>
+                <button
+                  onClick={handleAddSubstandar}
+                  className="mt-2 text-red-600 hover:text-red-800 font-medium"
+                >
+                  Tambah substandar pertama
+                </button>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-md p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium opacity-90">Total Standar</p>
-              <p className="text-2xl font-bold mt-1">{standars.length}</p>
-            </div>
-            <FiFileText className="text-2xl opacity-80" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-lg shadow-md p-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium opacity-90">Total Substandar</p>
-              <p className="text-2xl font-bold mt-1">{substandars.length}</p>
-            </div>
-            <FiBook className="text-2xl opacity-80" />
           </div>
         </div>
       </div>
