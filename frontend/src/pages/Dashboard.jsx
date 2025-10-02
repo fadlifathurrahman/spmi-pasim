@@ -62,27 +62,17 @@ const Dashboard = () => {
     });
   }, []);
 
-  // Hitung capaian universitas berdasarkan tahun yang dipilih
+  // Hitung capaian universitas sebagai rata-rata dari semua prodi
   useEffect(() => {
-    const tahunDipilih = tahunAkademikData.find(
-      (t) => t.rentang === selectedTahun
-    );
-    if (tahunDipilih) {
-      const periodeTahun = periodeData.filter(
-        (p) => p.id_tahunakademik === tahunDipilih.id
+    if (capaianProdi.length > 0) {
+      const totalPersen = capaianProdi.reduce(
+        (sum, prodi) => sum + prodi.persentase,
+        0
       );
-      const evaluasiTahun = evaluasiData.filter((e) =>
-        periodeTahun.some((p) => p.id === e.id_periode)
-      );
-
-      // hitung persentase (contoh sederhana)
-      const total = evaluasiTahun.length;
-      const selesai = evaluasiTahun.filter((_, idx) => idx % 2 === 0).length;
-      const persen = total > 0 ? Math.round((selesai / total) * 100) : 0;
-
-      setCapaianUniversitas(persen);
+      const rataRata = Math.round(totalPersen / capaianProdi.length);
+      setCapaianUniversitas(rataRata);
     }
-  }, [selectedTahun]);
+  }, [selectedTahun]); // bisa juga depend on capaianProdi kalau nanti dinamis
 
   // Fungsi untuk mendapatkan warna berdasarkan persentase
   const getProgressColor = (percentage) => {
