@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import {
   FiPlus,
   FiEdit,
-  FiTrash2,
   FiSave,
   FiX,
   FiCalendar,
   FiBook,
   FiUsers,
+  FiChevronDown,
 } from "react-icons/fi";
 
 // Import data
@@ -61,14 +61,12 @@ const TahunPeriode = () => {
     setFormData({ ...formData, rentang: tahun.rentang });
   };
 
-  const handleDeleteTahun = (id) => {
-    if (
-      window.confirm("Apakah Anda yakin ingin menghapus tahun akademik ini?")
-    ) {
-      setTahunAkademik(tahunAkademik.filter((tahun) => tahun.id !== id));
-      // Juga hapus periode yang terkait
-      setPeriode(periode.filter((p) => p.id_tahunakademik !== id));
-    }
+  const handleStatusTahun = (id, newStatus) => {
+    setTahunAkademik(
+      tahunAkademik.map((tahun) =>
+        tahun.id === id ? { ...tahun, status: newStatus } : tahun
+      )
+    );
   };
 
   const handleSaveTahun = () => {
@@ -94,6 +92,7 @@ const TahunPeriode = () => {
         {
           id: newId,
           rentang: formData.rentang,
+          status: "Tampil",
         },
       ]);
     }
@@ -119,10 +118,14 @@ const TahunPeriode = () => {
     });
   };
 
-  const handleDeletePeriode = (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus periode ini?")) {
-      setPeriode(periode.filter((p) => p.id !== id));
-    }
+  const handleStatusPeriode = (id, newStatus) => {
+    setPeriode(
+      periode.map((periodeItem) =>
+        periodeItem.id === id
+          ? { ...periodeItem, status: newStatus }
+          : periodeItem
+      )
+    );
   };
 
   const handleSavePeriode = () => {
@@ -153,6 +156,7 @@ const TahunPeriode = () => {
           id: newId,
           id_tahunakademik: parseInt(formData.id_tahunakademik),
           id_prodi: parseInt(formData.id_prodi),
+          status: "Tampil",
         },
       ]);
     }
@@ -174,12 +178,14 @@ const TahunPeriode = () => {
     setFormData({ ...formData, nama_fakultas: fakultasItem.nama_fakultas });
   };
 
-  const handleDeleteFakultas = (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus fakultas ini?")) {
-      setFakultas(fakultas.filter((f) => f.id !== id));
-      // Juga hapus prodi yang terkait
-      setProdi(prodi.filter((p) => p.id_fakultas !== id));
-    }
+  const handleStatusFakultas = (id, newStatus) => {
+    setFakultas(
+      fakultas.map((fakultasItem) =>
+        fakultasItem.id === id
+          ? { ...fakultasItem, status: newStatus }
+          : fakultasItem
+      )
+    );
   };
 
   const handleSaveFakultas = () => {
@@ -205,6 +211,7 @@ const TahunPeriode = () => {
         {
           id: newId,
           nama_fakultas: formData.nama_fakultas,
+          status: "Tampil",
         },
       ]);
     }
@@ -230,14 +237,12 @@ const TahunPeriode = () => {
     });
   };
 
-  const handleDeleteProdi = (id) => {
-    if (
-      window.confirm("Apakah Anda yakin ingin menghapus program studi ini?")
-    ) {
-      setProdi(prodi.filter((p) => p.id !== id));
-      // Juga hapus periode yang terkait
-      setPeriode(periode.filter((p) => p.id_prodi !== id));
-    }
+  const handleStatusProdi = (id, newStatus) => {
+    setProdi(
+      prodi.map((prodiItem) =>
+        prodiItem.id === id ? { ...prodiItem, status: newStatus } : prodiItem
+      )
+    );
   };
 
   const handleSaveProdi = () => {
@@ -268,6 +273,7 @@ const TahunPeriode = () => {
           id: newId,
           nama_prodi: formData.nama_prodi,
           id_fakultas: parseInt(formData.id_fakultas),
+          status: "Tampil",
         },
       ]);
     }
@@ -294,6 +300,21 @@ const TahunPeriode = () => {
       : "Fakultas tidak ditemukan";
   };
 
+  // Fungsi untuk mendapatkan style dropdown berdasarkan status
+  const getDropdownStyle = (status) => {
+    if (status === "Tampil") {
+      return "bg-green-50 text-green-700 border-green-200 hover:bg-green-100";
+    } else {
+      return "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100";
+    }
+  };
+
+  // Filter data yang hanya status tampil untuk summary cards
+  const tahunTampil = tahunAkademik.filter((t) => t.status === "Tampil");
+  const periodeTampil = periode.filter((p) => p.status === "Tampil");
+  const fakultasTampil = fakultas.filter((f) => f.status === "Tampil");
+  const prodiTampil = prodi.filter((p) => p.status === "Tampil");
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
@@ -314,8 +335,8 @@ const TahunPeriode = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Tahun Akademik</p>
-              <p className="text-2xl font-bold mt-1">{tahunAkademik.length}</p>
-              <p className="text-xs opacity-80 mt-1">Tahun akademik tersedia</p>
+              <p className="text-2xl font-bold mt-1">{tahunTampil.length}</p>
+              <p className="text-xs opacity-80 mt-1">Tahun akademik aktif</p>
             </div>
             <FiCalendar className="text-2xl opacity-80" />
           </div>
@@ -325,7 +346,7 @@ const TahunPeriode = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Periode</p>
-              <p className="text-2xl font-bold mt-1">{periode.length}</p>
+              <p className="text-2xl font-bold mt-1">{periodeTampil.length}</p>
               <p className="text-xs opacity-80 mt-1">Periode evaluasi aktif</p>
             </div>
             <FiBook className="text-2xl opacity-80" />
@@ -336,8 +357,8 @@ const TahunPeriode = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Fakultas</p>
-              <p className="text-2xl font-bold mt-1">{fakultas.length}</p>
-              <p className="text-xs opacity-80 mt-1">Fakultas yang terdaftar</p>
+              <p className="text-2xl font-bold mt-1">{fakultasTampil.length}</p>
+              <p className="text-xs opacity-80 mt-1">Fakultas aktif</p>
             </div>
             <FiUsers className="text-2xl opacity-80" />
           </div>
@@ -347,7 +368,7 @@ const TahunPeriode = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Program Studi</p>
-              <p className="text-2xl font-bold mt-1">{prodi.length}</p>
+              <p className="text-2xl font-bold mt-1">{prodiTampil.length}</p>
               <p className="text-xs opacity-80 mt-1">Program studi aktif</p>
             </div>
             <FiBook className="text-2xl opacity-80" />
@@ -439,11 +460,13 @@ const TahunPeriode = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   <option value="">Pilih Tahun Akademik</option>
-                  {tahunAkademik.map((tahun) => (
-                    <option key={tahun.id} value={tahun.id}>
-                      {tahun.rentang}
-                    </option>
-                  ))}
+                  {tahunAkademik
+                    .filter((t) => t.status === "Tampil")
+                    .map((tahun) => (
+                      <option key={tahun.id} value={tahun.id}>
+                        {tahun.rentang}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="mb-4">
@@ -458,11 +481,13 @@ const TahunPeriode = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   <option value="">Pilih Program Studi</option>
-                  {prodi.map((prodiItem) => (
-                    <option key={prodiItem.id} value={prodiItem.id}>
-                      {prodiItem.nama_prodi}
-                    </option>
-                  ))}
+                  {prodi
+                    .filter((p) => p.status === "Tampil")
+                    .map((prodiItem) => (
+                      <option key={prodiItem.id} value={prodiItem.id}>
+                        {prodiItem.nama_prodi}
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>
@@ -577,11 +602,13 @@ const TahunPeriode = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   <option value="">Pilih Fakultas</option>
-                  {fakultas.map((fakultasItem) => (
-                    <option key={fakultasItem.id} value={fakultasItem.id}>
-                      {fakultasItem.nama_fakultas}
-                    </option>
-                  ))}
+                  {fakultas
+                    .filter((f) => f.status === "Tampil")
+                    .map((fakultasItem) => (
+                      <option key={fakultasItem.id} value={fakultasItem.id}>
+                        {fakultasItem.nama_fakultas}
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>
@@ -650,21 +677,39 @@ const TahunPeriode = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      <div className="flex space-x-2">
+                      <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleEditTahun(tahun)}
-                          className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
-                          title="Edit Tahun Akademik"
+                          className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
                         >
-                          <FiEdit className="text-lg" />
+                          <FiEdit className="mr-1" />
+                          Edit
                         </button>
-                        <button
-                          onClick={() => handleDeleteTahun(tahun.id)}
-                          className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
-                          title="Hapus Tahun Akademik"
-                        >
-                          <FiTrash2 className="text-lg" />
-                        </button>
+                        <div className="relative">
+                          <select
+                            value={tahun.status}
+                            onChange={(e) =>
+                              handleStatusTahun(tahun.id, e.target.value)
+                            }
+                            className={`appearance-none flex items-center px-3 py-1 border rounded-lg transition-colors duration-200 text-sm cursor-pointer ${getDropdownStyle(
+                              tahun.status
+                            )}`}
+                          >
+                            <option
+                              value="Tampil"
+                              className="bg-white text-gray-900"
+                            >
+                              Tampil
+                            </option>
+                            <option
+                              value="Arsip"
+                              className="bg-white text-gray-900"
+                            >
+                              Arsip
+                            </option>
+                          </select>
+                          <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -735,21 +780,42 @@ const TahunPeriode = () => {
                       {getNamaProdi(periodeItem.id_prodi)}
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      <div className="flex space-x-2">
+                      <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleEditPeriode(periodeItem)}
-                          className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
-                          title="Edit Periode"
+                          className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
                         >
-                          <FiEdit className="text-lg" />
+                          <FiEdit className="mr-1" />
+                          Edit
                         </button>
-                        <button
-                          onClick={() => handleDeletePeriode(periodeItem.id)}
-                          className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
-                          title="Hapus Periode"
-                        >
-                          <FiTrash2 className="text-lg" />
-                        </button>
+                        <div className="relative">
+                          <select
+                            value={periodeItem.status}
+                            onChange={(e) =>
+                              handleStatusPeriode(
+                                periodeItem.id,
+                                e.target.value
+                              )
+                            }
+                            className={`appearance-none flex items-center px-3 py-1 border rounded-lg transition-colors duration-200 text-sm cursor-pointer ${getDropdownStyle(
+                              periodeItem.status
+                            )}`}
+                          >
+                            <option
+                              value="Tampil"
+                              className="bg-white text-gray-900"
+                            >
+                              Tampil
+                            </option>
+                            <option
+                              value="Arsip"
+                              className="bg-white text-gray-900"
+                            >
+                              Arsip
+                            </option>
+                          </select>
+                          <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -814,21 +880,42 @@ const TahunPeriode = () => {
                       {fakultasItem.nama_fakultas}
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      <div className="flex space-x-2">
+                      <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleEditFakultas(fakultasItem)}
-                          className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
-                          title="Edit Fakultas"
+                          className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
                         >
-                          <FiEdit className="text-lg" />
+                          <FiEdit className="mr-1" />
+                          Edit
                         </button>
-                        <button
-                          onClick={() => handleDeleteFakultas(fakultasItem.id)}
-                          className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
-                          title="Hapus Fakultas"
-                        >
-                          <FiTrash2 className="text-lg" />
-                        </button>
+                        <div className="relative">
+                          <select
+                            value={fakultasItem.status}
+                            onChange={(e) =>
+                              handleStatusFakultas(
+                                fakultasItem.id,
+                                e.target.value
+                              )
+                            }
+                            className={`appearance-none flex items-center px-3 py-1 border rounded-lg transition-colors duration-200 text-sm cursor-pointer ${getDropdownStyle(
+                              fakultasItem.status
+                            )}`}
+                          >
+                            <option
+                              value="Tampil"
+                              className="bg-white text-gray-900"
+                            >
+                              Tampil
+                            </option>
+                            <option
+                              value="Arsip"
+                              className="bg-white text-gray-900"
+                            >
+                              Arsip
+                            </option>
+                          </select>
+                          <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -899,21 +986,39 @@ const TahunPeriode = () => {
                       {getNamaFakultas(prodiItem.id_fakultas)}
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      <div className="flex space-x-2">
+                      <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleEditProdi(prodiItem)}
-                          className="text-blue-600 hover:text-blue-800 transition-colors duration-200 p-1 rounded hover:bg-blue-50"
-                          title="Edit Program Studi"
+                          className="flex items-center px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm"
                         >
-                          <FiEdit className="text-lg" />
+                          <FiEdit className="mr-1" />
+                          Edit
                         </button>
-                        <button
-                          onClick={() => handleDeleteProdi(prodiItem.id)}
-                          className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1 rounded hover:bg-red-50"
-                          title="Hapus Program Studi"
-                        >
-                          <FiTrash2 className="text-lg" />
-                        </button>
+                        <div className="relative">
+                          <select
+                            value={prodiItem.status}
+                            onChange={(e) =>
+                              handleStatusProdi(prodiItem.id, e.target.value)
+                            }
+                            className={`appearance-none flex items-center px-3 py-1 border rounded-lg transition-colors duration-200 text-sm cursor-pointer ${getDropdownStyle(
+                              prodiItem.status
+                            )}`}
+                          >
+                            <option
+                              value="Tampil"
+                              className="bg-white text-gray-900"
+                            >
+                              Tampil
+                            </option>
+                            <option
+                              value="Arsip"
+                              className="bg-white text-gray-900"
+                            >
+                              Arsip
+                            </option>
+                          </select>
+                          <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+                        </div>
                       </div>
                     </td>
                   </tr>
