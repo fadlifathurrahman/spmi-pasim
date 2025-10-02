@@ -127,7 +127,6 @@ const StandarSubstandar = () => {
             <div>
               <p className="text-sm font-medium opacity-90">Total Standar</p>
               <p className="text-2xl font-bold mt-1">{standars.length}</p>
-              <p className="text-xs opacity-80 mt-1">Standar mutu yang aktif</p>
             </div>
             <FiFileText className="text-2xl opacity-80" />
           </div>
@@ -138,7 +137,6 @@ const StandarSubstandar = () => {
             <div>
               <p className="text-sm font-medium opacity-90">Total Substandar</p>
               <p className="text-2xl font-bold mt-1">{substandarData.length}</p>
-              <p className="text-xs opacity-80 mt-1">Substandar yang aktif</p>
             </div>
             <FiBook className="text-2xl opacity-80" />
           </div>
