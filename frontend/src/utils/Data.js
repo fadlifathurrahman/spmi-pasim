@@ -137,13 +137,13 @@ export const prodiData = [
 // ==========================
 // Data Evaluasi
 // ==========================
-export const evaluasiData = [
-    { id: 1, id_substandar: 1, id_jenisindikator: 1, id_target: 1, id_capaian: 1, id_periode: 1, status: "tampil" },
-    { id: 2, id_substandar: 2, id_jenisindikator: 2, id_target: 2, id_capaian: 2, id_periode: 1, status: "tampil" },
-    { id: 3, id_substandar: 3, id_jenisindikator: 1, id_target: 3, id_capaian: 3, id_periode: 2, status: "tampil" },
-    { id: 4, id_substandar: 4, id_jenisindikator: 2, id_target: 4, id_capaian: 4, id_periode: 3, status: "tampil" },
-    { id: 5, id_substandar: 5, id_jenisindikator: 1, id_target: 5, id_capaian: 5, id_periode: 2, status: "tampil" }
-];
+// export const evaluasiData = [
+//     { id: 1, id_substandar: 1, id_jenisindikator: 1, id_target: 1, id_capaian: 1, id_periode: 1, status: "tampil" },
+//     { id: 2, id_substandar: 2, id_jenisindikator: 2, id_target: 2, id_capaian: 2, id_periode: 1, status: "tampil" },
+//     { id: 3, id_substandar: 3, id_jenisindikator: 1, id_target: 3, id_capaian: 3, id_periode: 2, status: "tampil" },
+//     { id: 4, id_substandar: 4, id_jenisindikator: 2, id_target: 4, id_capaian: 4, id_periode: 3, status: "tampil" },
+//     { id: 5, id_substandar: 5, id_jenisindikator: 1, id_target: 5, id_capaian: 5, id_periode: 2, status: "tampil" }
+// ];
 
 // ==========================
 // Data Laporan Prodi
@@ -181,4 +181,21 @@ export const dataUser = [
         email: "auditor2@university.ac.id",
         password: "auditor123"
     }
+];
+
+
+// ==========================
+// Data Evaluasi (multi-periode)
+// ==========================
+export const evaluasiData = [
+    // STANDAR PENELITIAN – HASIL PENELITIAN
+    { id: 1, id_substandar: 11, id_jenisindikator: 1, indikator: "Tersedianya pedoman penelitian (usul dan pelaporan penelitian)", target: "Tersedia", status: "tampil" },
+    { id: 2, id_substandar: 11, id_jenisindikator: 1, indikator: "Jumlah penelitian dosen yang relevan dengan program studi per tahun", target: "1 penelitian/dosen", status: "tampil" },
+    { id: 3, id_substandar: 12, id_jenisindikator: 1, indikator: "Publikasi hasil penelitian pada jurnal nasional per tahun (%)", target: "≥ 50%", status: "tampil" },
+    { id: 4, id_substandar: 12, id_jenisindikator: 1, indikator: "Publikasi hasil penelitian pada jurnal internasional per tahun (%)", target: "≥ 10%", status: "tampil" },
+    { id: 5, id_substandar: 12, id_jenisindikator: 1, indikator: "Jumlah HKI/Paten karya ilmiah dosen per tahun", target: "Min. 1 HKI", status: "tampil" },
+
+    // STANDAR ISI PENELITIAN
+    { id: 6, id_substandar: 11, id_jenisindikator: 1, indikator: "Tersedianya peta jalan penelitian", target: "Tersedia", status: "tampil" },
+    { id: 7, id_substandar: 11, id_jenisindikator: 1, indikator: "Penelitian dilaksanakan sesuai dengan bidang keilmuan program studi", target: "90% sesuai", status: "tampil" },
 ];
