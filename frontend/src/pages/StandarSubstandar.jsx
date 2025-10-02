@@ -21,12 +21,11 @@ const StandarSubstandar = () => {
   const [editingSubstandar, setEditingSubstandar] = useState(null);
   const [formData, setFormData] = useState({
     nama_standar: "",
-    nama_substandar: "",
+    nama: "",
     id_standar: "",
   });
 
   useEffect(() => {
-    // Load data dari Data.js
     setStandars(standarData);
     setSubstandars(substandarData);
   }, []);
@@ -35,7 +34,7 @@ const StandarSubstandar = () => {
   const handleAddSubstandar = () => {
     setShowSubstandarForm(true);
     setEditingSubstandar(null);
-    setFormData({ nama_standar: "", nama_substandar: "", id_standar: "" });
+    setFormData({ nama_standar: "", nama: "", id_standar: "" });
   };
 
   const handleEditSubstandar = (substandar) => {
@@ -43,7 +42,7 @@ const StandarSubstandar = () => {
     setEditingSubstandar(substandar);
     setFormData({
       ...formData,
-      nama_substandar: substandar.nama_substandar,
+      nama: substandar.nama,
       id_standar: substandar.id_standar.toString(),
     });
   };
@@ -57,7 +56,7 @@ const StandarSubstandar = () => {
   };
 
   const handleSaveSubstandar = () => {
-    if (!formData.nama_substandar.trim() || !formData.id_standar) {
+    if (!formData.nama.trim() || !formData.id_standar) {
       alert("Nama substandar dan standar harus diisi");
       return;
     }
@@ -69,7 +68,7 @@ const StandarSubstandar = () => {
           substandar.id === editingSubstandar.id
             ? {
                 ...substandar,
-                nama_substandar: formData.nama_substandar,
+                nama: formData.nama,
                 id_standar: parseInt(formData.id_standar),
               }
             : substandar
@@ -82,7 +81,7 @@ const StandarSubstandar = () => {
         ...substandars,
         {
           id: newId,
-          nama_substandar: formData.nama_substandar,
+          nama: formData.nama,
           id_standar: parseInt(formData.id_standar),
           status: "aktif",
         },
@@ -90,7 +89,7 @@ const StandarSubstandar = () => {
     }
 
     setShowSubstandarForm(false);
-    setFormData({ nama_standar: "", nama_substandar: "", id_standar: "" });
+    setFormData({ nama_standar: "", nama: "", id_standar: "" });
   };
 
   const getNamaStandar = (id_standar) => {
@@ -106,12 +105,6 @@ const StandarSubstandar = () => {
       return "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100";
     }
   };
-
-  // Filter data yang hanya status aktif
-  const standarsaktif = standars.filter(
-    (standar) => standar.status === "aktif"
-  );
-  const substandarsaktif = substandars.filter((sub) => sub.status === "aktif");
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -133,7 +126,7 @@ const StandarSubstandar = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Total Standar</p>
-              <p className="text-2xl font-bold mt-1">{standarsaktif.length}</p>
+              <p className="text-2xl font-bold mt-1">{standars.length}</p>
               <p className="text-xs opacity-80 mt-1">Standar mutu yang aktif</p>
             </div>
             <FiFileText className="text-2xl opacity-80" />
@@ -144,9 +137,7 @@ const StandarSubstandar = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Total Substandar</p>
-              <p className="text-2xl font-bold mt-1">
-                {substandarsaktif.length}
-              </p>
+              <p className="text-2xl font-bold mt-1">{substandarData.length}</p>
               <p className="text-xs opacity-80 mt-1">Substandar yang aktif</p>
             </div>
             <FiBook className="text-2xl opacity-80" />
@@ -176,11 +167,11 @@ const StandarSubstandar = () => {
                 </label>
                 <input
                   type="text"
-                  value={formData.nama_substandar}
+                  value={formData.nama}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      nama_substandar: e.target.value,
+                      nama: e.target.value,
                     })
                   }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
@@ -199,13 +190,11 @@ const StandarSubstandar = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   <option value="">Pilih Standar</option>
-                  {standars
-                    .filter((s) => s.status === "aktif")
-                    .map((standar) => (
-                      <option key={standar.id} value={standar.id}>
-                        {standar.nama_standar}
-                      </option>
-                    ))}
+                  {standars.map((standar) => (
+                    <option key={standar.id} value={standar.id}>
+                      {standar.nama}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
