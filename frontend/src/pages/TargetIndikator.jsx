@@ -22,7 +22,7 @@ const TargetIndikator = () => {
   const [editingCapaian, setEditingCapaian] = useState(null);
   const [formData, setFormData] = useState({
     deskripsi: "",
-    deskripsi_capaian: "",
+    hasil: "",
   });
 
   // Indikator fix (tidak bisa ditambah/dihapus)
@@ -48,7 +48,7 @@ const TargetIndikator = () => {
   const handleAddTarget = () => {
     setShowTargetForm(true);
     setEditingTarget(null);
-    setFormData({ deskripsi: "", deskripsi_capaian: "" });
+    setFormData({ deskripsi: "", hasil: "" });
   };
 
   const handleEditTarget = (target) => {
@@ -80,24 +80,24 @@ const TargetIndikator = () => {
     }
 
     setShowTargetForm(false);
-    setFormData({ deskripsi: "", deskripsi_capaian: "" });
+    setFormData({ deskripsi: "", hasil: "" });
   };
 
   // Capaian Functions
   const handleAddCapaian = () => {
     setShowCapaianForm(true);
     setEditingCapaian(null);
-    setFormData({ deskripsi: "", deskripsi_capaian: "" });
+    setFormData({ deskripsi: "", hasil: "" });
   };
 
   const handleEditCapaian = (capaianItem) => {
     setShowCapaianForm(true);
     setEditingCapaian(capaianItem);
-    setFormData({ ...formData, deskripsi_capaian: capaianItem.deskripsi });
+    setFormData({ ...formData, hasil: capaianItem.deskripsi });
   };
 
   const handleSaveCapaian = () => {
-    if (!formData.deskripsi_capaian.trim()) {
+    if (!formData.hasil.trim()) {
       alert("Deskripsi capaian tidak boleh kosong");
       return;
     }
@@ -105,9 +105,7 @@ const TargetIndikator = () => {
     if (editingCapaian) {
       setCapaian(
         capaian.map((c) =>
-          c.id === editingCapaian.id
-            ? { ...c, deskripsi: formData.deskripsi_capaian }
-            : c
+          c.id === editingCapaian.id ? { ...c, hasil: formData.hasil } : c
         )
       );
     } else {
@@ -116,14 +114,14 @@ const TargetIndikator = () => {
         ...capaian,
         {
           id: newId,
-          deskripsi: formData.deskripsi_capaian,
+          hasil: formData.hasil,
           status: "Tampil",
         },
       ]);
     }
 
     setShowCapaianForm(false);
-    setFormData({ deskripsi: "", deskripsi_capaian: "" });
+    setFormData({ deskripsi: "", hasil: "" });
   };
 
   // Update status dropdown
@@ -257,7 +255,7 @@ const TargetIndikator = () => {
                     ID
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Deskripsi
+                    Hasil
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Aksi
@@ -274,7 +272,7 @@ const TargetIndikator = () => {
                       {c.id}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900">
-                      {c.deskripsi}
+                      {c.hasil}
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <div className="flex items-center space-x-2">
@@ -483,18 +481,18 @@ const TargetIndikator = () => {
             <div className="p-4">
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Deskripsi Capaian
+                  Hasil Capaian
                 </label>
                 <textarea
-                  value={formData.deskripsi_capaian}
+                  value={formData.hasil}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      deskripsi_capaian: e.target.value,
+                      hasil: e.target.value,
                     })
                   }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  placeholder="Masukkan deskripsi capaian (contoh: 90% Sesuai, Tersedia, ≥ 60%, dll)"
+                  placeholder="Masukkan hasil capaian (contoh: 90% Sesuai, Tersedia, ≥ 60%, dll)"
                   rows="3"
                 />
               </div>
