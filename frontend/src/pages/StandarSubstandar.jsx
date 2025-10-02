@@ -95,7 +95,7 @@ const StandarSubstandar = () => {
 
   const getNamaStandar = (id_standar) => {
     const standar = standars.find((s) => s.id === id_standar);
-    return standar ? standar.nama_standar : "Standar tidak ditemukan";
+    return standar ? standar.nama : "Standar tidak ditemukan";
   };
 
   // Fungsi untuk mendapatkan style dropdown berdasarkan status
@@ -259,7 +259,7 @@ const StandarSubstandar = () => {
                       {standar.id}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900">
-                      {standar.nama_standar}
+                      {standar.nama}
                     </td>
                   </tr>
                 ))}
@@ -311,7 +311,7 @@ const StandarSubstandar = () => {
                       {substandar.id}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-900">
-                      {substandar.nama_substandar}
+                      {substandar.nama}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {getNamaStandar(substandar.id_standar)}
