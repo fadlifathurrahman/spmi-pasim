@@ -40,8 +40,8 @@ const TargetIndikator = () => {
   ];
 
   useEffect(() => {
-    setTargets(targetData.map((t) => ({ ...t, status: "Tampil" })));
-    setCapaian(capaianData.map((c) => ({ ...c, status: "Tampil" })));
+    setTargets(targetData.map((t) => ({ ...t, status: "aktif" })));
+    setCapaian(capaianData.map((c) => ({ ...c, status: "aktif" })));
   }, []);
 
   // Target Functions
@@ -75,7 +75,7 @@ const TargetIndikator = () => {
       const newId = Math.max(...targets.map((t) => t.id), 0) + 1;
       setTargets([
         ...targets,
-        { id: newId, deskripsi: formData.deskripsi, status: "Tampil" },
+        { id: newId, deskripsi: formData.deskripsi, status: "aktif" },
       ]);
     }
 
@@ -115,7 +115,7 @@ const TargetIndikator = () => {
         {
           id: newId,
           hasil: formData.hasil,
-          status: "Tampil",
+          status: "aktif",
         },
       ]);
     }
@@ -135,7 +135,7 @@ const TargetIndikator = () => {
 
   // Fungsi untuk mendapatkan style dropdown berdasarkan status
   const getDropdownStyle = (status) => {
-    if (status === "Tampil") {
+    if (status === "aktif") {
       return "bg-green-50 text-green-700 border-green-200 hover:bg-green-100";
     } else {
       return "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100";
@@ -299,16 +299,16 @@ const TargetIndikator = () => {
                             )}`}
                           >
                             <option
-                              value="Tampil"
+                              value="aktif"
                               className="bg-white text-gray-900"
                             >
-                              Tampil
+                              aktif
                             </option>
                             <option
-                              value="Arsip"
+                              value="pasif"
                               className="bg-white text-gray-900"
                             >
-                              Arsip
+                              pasif
                             </option>
                           </select>
                           <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
@@ -390,16 +390,16 @@ const TargetIndikator = () => {
                           )}`}
                         >
                           <option
-                            value="Tampil"
+                            value="aktif"
                             className="bg-white text-gray-900"
                           >
-                            Tampil
+                            aktif
                           </option>
                           <option
-                            value="Arsip"
+                            value="pasif"
                             className="bg-white text-gray-900"
                           >
-                            Arsip
+                            pasif
                           </option>
                         </select>
                         <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
