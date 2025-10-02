@@ -17,14 +17,35 @@ import {
 import { Link } from "react-router-dom";
 
 const SideBar = ({ isOpen, closeSidebar }) => {
-  const [isLaporanOpen, setIsLaporanOpen] = useState(false);
+  const [isEvaluasiOpen, setIsEvaluasiOpen] = useState(false);
   const [userRole, setUserRole] = useState("admin");
+  const [prodiList, setProdiList] = useState([]);
 
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if (currentUser) {
       setUserRole(currentUser.role);
     }
+
+    // Data prodi dari file data yang Anda berikan
+    const prodiData = [
+      {
+        id: 1,
+        nama_prodi: "Teknik Informatika",
+        id_fakultas: 1,
+        status: "tampil",
+      },
+      {
+        id: 2,
+        nama_prodi: "Sistem Informasi",
+        id_fakultas: 1,
+        status: "tampil",
+      },
+      { id: 3, nama_prodi: "Manajemen", id_fakultas: 2, status: "tampil" },
+      { id: 4, nama_prodi: "Akuntansi", id_fakultas: 2, status: "tampil" },
+    ];
+
+    setProdiList(prodiData);
   }, []);
 
   const handleLinkClick = () => {
@@ -111,28 +132,34 @@ const SideBar = ({ isOpen, closeSidebar }) => {
             </Link>
           </li>
 
-          {/* Evaluasi */}
+          {/* Menu Evaluasi (Dropdown) */}
           <li>
-            <Link
-              to="/evaluasi"
-              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-              onClick={handleLinkClick}
+            <button
+              onClick={() => setIsEvaluasiOpen(!isEvaluasiOpen)}
+              className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-red-50 font-medium"
             >
-              <FiTrendingUp className="mr-2 text-black" />
-              Evaluasi
-            </Link>
-          </li>
-
-          {/* Input Capaian */}
-          <li>
-            <Link
-              to="/input-capaian"
-              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-              onClick={handleLinkClick}
-            >
-              <FiCheckSquare className="mr-2 text-black" />
-              Input Capaian
-            </Link>
+              <div className="flex items-center">
+                <FiTrendingUp className="mr-2 text-black" />
+                <span>Evaluasi</span>
+              </div>
+              {isEvaluasiOpen ? <FiChevronDown /> : <FiChevronRight />}
+            </button>
+            {isEvaluasiOpen && (
+              <ul className="ml-8 mt-2 space-y-2">
+                {prodiList.map((prodi) => (
+                  <li key={prodi.id}>
+                    <Link
+                      to={`/evaluasi`}
+                      className="flex items-center p-2 rounded-lg hover:bg-red-50"
+                      onClick={handleLinkClick}
+                    >
+                      <FiTrendingUp className="mr-2 text-black" />
+                      {prodi.nama_prodi}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
 
           {/* Validasi Capaian */}
@@ -151,42 +178,16 @@ const SideBar = ({ isOpen, closeSidebar }) => {
             </li>
           )}
 
-          {/* Menu Laporan */}
+          {/* Laporan Prodi (Bukan Dropdown) */}
           <li>
-            <button
-              onClick={() => setIsLaporanOpen(!isLaporanOpen)}
-              className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-red-50 font-medium"
+            <Link
+              to="/laporan-prodi"
+              className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
+              onClick={handleLinkClick}
             >
-              <div className="flex items-center">
-                <FiBarChart2 className="mr-2 text-black" />
-                <span>Laporan</span>
-              </div>
-              {isLaporanOpen ? <FiChevronDown /> : <FiChevronRight />}
-            </button>
-            {isLaporanOpen && (
-              <ul className="ml-8 mt-2 space-y-2">
-                <li>
-                  <Link
-                    to="/laporan-prodi"
-                    className="flex items-center p-2 rounded-lg hover:bg-red-50"
-                    onClick={handleLinkClick}
-                  >
-                    <FiBarChart2 className="mr-2 text-black" />
-                    Laporan Prodi
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/laporan-audit"
-                    className="flex items-center p-2 rounded-lg hover:bg-red-50"
-                    onClick={handleLinkClick}
-                  >
-                    <FiBarChart2 className="mr-2 text-black" />
-                    Laporan Audit
-                  </Link>
-                </li>
-              </ul>
-            )}
+              <FiBarChart2 className="mr-2 text-black" />
+              Laporan Prodi
+            </Link>
           </li>
         </ul>
       </nav>
