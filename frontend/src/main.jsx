@@ -45,7 +45,7 @@ const router = createBrowserRouter([
         element: <TahunPeriode />,
       },
       {
-        path: "/evaluasi",
+        path: "/evaluasi/:idProdi",
         element: <Evaluasi />,
       },
       {
