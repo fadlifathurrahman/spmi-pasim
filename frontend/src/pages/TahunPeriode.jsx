@@ -460,13 +460,11 @@ const TahunPeriode = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   <option value="">Pilih Tahun Akademik</option>
-                  {tahunAkademik
-                    .filter((t) => t.status === "Tampil")
-                    .map((tahun) => (
-                      <option key={tahun.id} value={tahun.id}>
-                        {tahun.rentang}
-                      </option>
-                    ))}
+                  {tahunAkademik.map((tahun) => (
+                    <option key={tahun.id} value={tahun.id}>
+                      {tahun.rentang}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="mb-4">
@@ -481,13 +479,11 @@ const TahunPeriode = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   <option value="">Pilih Program Studi</option>
-                  {prodi
-                    .filter((p) => p.status === "Tampil")
-                    .map((prodiItem) => (
-                      <option key={prodiItem.id} value={prodiItem.id}>
-                        {prodiItem.nama_prodi}
-                      </option>
-                    ))}
+                  {prodi.map((prodiItem) => (
+                    <option key={prodiItem.id} value={prodiItem.id}>
+                      {prodiItem.nama_prodi}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
