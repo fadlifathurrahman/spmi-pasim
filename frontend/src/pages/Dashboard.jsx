@@ -1,14 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import {
   FiFileText,
   FiTrendingUp,
-  FiCheckCircle,
   FiClock,
   FiBarChart2,
-  FiUsers,
   FiBook,
   FiTarget,
-  FiCalendar,
 } from "react-icons/fi";
 import {
   standarData,
@@ -17,7 +15,6 @@ import {
   capaianData,
   tahunAkademikData,
   prodiData,
-  periodeData,
 } from "./../utils/Data.js";
 
 const Dashboard = () => {
@@ -62,6 +59,14 @@ const Dashboard = () => {
     });
   }, []);
 
+  // Data capaian per prodi
+  const capaianProdi = [
+    { nama: "Teknik Informatika", persentase: 85 },
+    { nama: "Sistem Informasi", persentase: 72 },
+    { nama: "Manajemen", persentase: 68 },
+    { nama: "Akuntansi", persentase: 91 },
+  ];
+
   // Hitung capaian universitas sebagai rata-rata dari semua prodi
   useEffect(() => {
     if (capaianProdi.length > 0) {
@@ -72,7 +77,7 @@ const Dashboard = () => {
       const rataRata = Math.round(totalPersen / capaianProdi.length);
       setCapaianUniversitas(rataRata);
     }
-  }, [selectedTahun]); // bisa juga depend on capaianProdi kalau nanti dinamis
+  }, [capaianProdi, selectedTahun]); // bisa juga depend on capaianProdi kalau nanti dinamis
 
   // Fungsi untuk mendapatkan warna berdasarkan persentase
   const getProgressColor = (percentage) => {
@@ -82,14 +87,6 @@ const Dashboard = () => {
     if (percentage >= 60) return "bg-orange-500";
     return "bg-red-500";
   };
-
-  // Data capaian per prodi
-  const capaianProdi = [
-    { nama: "Teknik Informatika", persentase: 85 },
-    { nama: "Sistem Informasi", persentase: 72 },
-    { nama: "Manajemen", persentase: 68 },
-    { nama: "Akuntansi", persentase: 91 },
-  ];
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
