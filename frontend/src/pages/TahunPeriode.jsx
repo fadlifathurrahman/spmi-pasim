@@ -92,7 +92,7 @@ const TahunPeriode = () => {
         {
           id: newId,
           rentang: formData.rentang,
-          status: "Tampil",
+          status: "aktif",
         },
       ]);
     }
@@ -156,7 +156,7 @@ const TahunPeriode = () => {
           id: newId,
           id_tahunakademik: parseInt(formData.id_tahunakademik),
           id_prodi: parseInt(formData.id_prodi),
-          status: "Tampil",
+          status: "aktif",
         },
       ]);
     }
@@ -211,7 +211,7 @@ const TahunPeriode = () => {
         {
           id: newId,
           nama_fakultas: formData.nama_fakultas,
-          status: "Tampil",
+          status: "aktif",
         },
       ]);
     }
@@ -273,7 +273,7 @@ const TahunPeriode = () => {
           id: newId,
           nama_prodi: formData.nama_prodi,
           id_fakultas: parseInt(formData.id_fakultas),
-          status: "Tampil",
+          status: "aktif",
         },
       ]);
     }
@@ -302,18 +302,12 @@ const TahunPeriode = () => {
 
   // Fungsi untuk mendapatkan style dropdown berdasarkan status
   const getDropdownStyle = (status) => {
-    if (status === "Tampil") {
+    if (status === "aktif") {
       return "bg-green-50 text-green-700 border-green-200 hover:bg-green-100";
     } else {
       return "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100";
     }
   };
-
-  // Filter data yang hanya status tampil untuk summary cards
-  const tahunTampil = tahunAkademik.filter((t) => t.status === "Tampil");
-  const periodeTampil = periode.filter((p) => p.status === "Tampil");
-  const fakultasTampil = fakultas.filter((f) => f.status === "Tampil");
-  const prodiTampil = prodi.filter((p) => p.status === "Tampil");
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -335,8 +329,7 @@ const TahunPeriode = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Tahun Akademik</p>
-              <p className="text-2xl font-bold mt-1">{tahunTampil.length}</p>
-              <p className="text-xs opacity-80 mt-1">Tahun akademik aktif</p>
+              <p className="text-2xl font-bold mt-1">{tahunAkademik.length}</p>
             </div>
             <FiCalendar className="text-2xl opacity-80" />
           </div>
@@ -346,8 +339,7 @@ const TahunPeriode = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Periode</p>
-              <p className="text-2xl font-bold mt-1">{periodeTampil.length}</p>
-              <p className="text-xs opacity-80 mt-1">Periode evaluasi aktif</p>
+              <p className="text-2xl font-bold mt-1">{periode.length}</p>
             </div>
             <FiBook className="text-2xl opacity-80" />
           </div>
@@ -357,8 +349,7 @@ const TahunPeriode = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Fakultas</p>
-              <p className="text-2xl font-bold mt-1">{fakultasTampil.length}</p>
-              <p className="text-xs opacity-80 mt-1">Fakultas aktif</p>
+              <p className="text-2xl font-bold mt-1">{fakultas.length}</p>
             </div>
             <FiUsers className="text-2xl opacity-80" />
           </div>
@@ -368,8 +359,7 @@ const TahunPeriode = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium opacity-90">Program Studi</p>
-              <p className="text-2xl font-bold mt-1">{prodiTampil.length}</p>
-              <p className="text-xs opacity-80 mt-1">Program studi aktif</p>
+              <p className="text-2xl font-bold mt-1">{prodi.length}</p>
             </div>
             <FiBook className="text-2xl opacity-80" />
           </div>
@@ -599,7 +589,7 @@ const TahunPeriode = () => {
                 >
                   <option value="">Pilih Fakultas</option>
                   {fakultas
-                    .filter((f) => f.status === "Tampil")
+                    .filter((f) => f.status === "aktif")
                     .map((fakultasItem) => (
                       <option key={fakultasItem.id} value={fakultasItem.id}>
                         {fakultasItem.nama_fakultas}
@@ -692,16 +682,16 @@ const TahunPeriode = () => {
                             )}`}
                           >
                             <option
-                              value="Tampil"
+                              value="aktif"
                               className="bg-white text-gray-900"
                             >
-                              Tampil
+                              aktif
                             </option>
                             <option
-                              value="Arsip"
+                              value="pasif"
                               className="bg-white text-gray-900"
                             >
-                              Arsip
+                              pasif
                             </option>
                           </select>
                           <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
@@ -798,16 +788,16 @@ const TahunPeriode = () => {
                             )}`}
                           >
                             <option
-                              value="Tampil"
+                              value="aktif"
                               className="bg-white text-gray-900"
                             >
-                              Tampil
+                              aktif
                             </option>
                             <option
-                              value="Arsip"
+                              value="pasif"
                               className="bg-white text-gray-900"
                             >
-                              Arsip
+                              pasif
                             </option>
                           </select>
                           <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
@@ -898,16 +888,16 @@ const TahunPeriode = () => {
                             )}`}
                           >
                             <option
-                              value="Tampil"
+                              value="aktif"
                               className="bg-white text-gray-900"
                             >
-                              Tampil
+                              aktif
                             </option>
                             <option
-                              value="Arsip"
+                              value="pasif"
                               className="bg-white text-gray-900"
                             >
-                              Arsip
+                              pasif
                             </option>
                           </select>
                           <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
@@ -1001,16 +991,16 @@ const TahunPeriode = () => {
                             )}`}
                           >
                             <option
-                              value="Tampil"
+                              value="aktif"
                               className="bg-white text-gray-900"
                             >
-                              Tampil
+                              aktif
                             </option>
                             <option
-                              value="Arsip"
+                              value="pasif"
                               className="bg-white text-gray-900"
                             >
-                              Arsip
+                              pasif
                             </option>
                           </select>
                           <FiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
