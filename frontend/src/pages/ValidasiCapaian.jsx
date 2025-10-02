@@ -7,6 +7,8 @@ import {
   FiDownload,
   FiFilter,
   FiSearch,
+  FiCheck,
+  FiX,
 } from "react-icons/fi";
 
 // Import data
@@ -16,14 +18,43 @@ import {
   substandarData,
   jenisIndikatorData,
   dataUser,
+  periodeData,
+  tahunAkademikData,
+  prodiData,
 } from "./../utils/Data.js";
 
 const ValidasiCapaian = () => {
   const [capaian, setCapaian] = useState([]);
   const [filterStatus, setFilterStatus] = useState("semua");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedPeriode, setSelectedPeriode] = useState("");
+  const [periodeOptions, setPeriodeOptions] = useState([]);
 
   useEffect(() => {
+    // Inisialisasi data periode
+    const formattedPeriodes = periodeData.map((periode) => {
+      const tahunAkademik = tahunAkademikData.find(
+        (tahun) => tahun.id === periode.id_tahunakademik
+      );
+      const prodi = prodiData.find((prodi) => prodi.id === periode.id_prodi);
+
+      return {
+        id: periode.id,
+        label: `${tahunAkademik?.rentang || "Tahun tidak ditemukan"} - ${
+          prodi?.nama_prodi || "Prodi tidak ditemukan"
+        }`,
+        id_tahunakademik: periode.id_tahunakademik,
+        id_prodi: periode.id_prodi,
+      };
+    });
+
+    setPeriodeOptions(formattedPeriodes);
+
+    // Set periode pertama sebagai default
+    if (formattedPeriodes.length > 0 && !selectedPeriode) {
+      setSelectedPeriode(formattedPeriodes[0].id);
+    }
+
     // Load data capaian dengan status validasi
     const capaianWithDetails = capaianData.map((item, index) => ({
       ...item,
@@ -32,38 +63,61 @@ const ValidasiCapaian = () => {
       auditor:
         dataUser.find((user) => user.role === "auditor")?.name ||
         "Auditor Internal",
-      status: ["validasi", "ditolak", "disetujui", "revisi"][index % 4],
+      status: "validasi", // Default status menunggu validasi
       tanggal_input: new Date().toISOString().split("T")[0],
       bukti: `bukti-${index + 1}.pdf`,
       catatan:
         index % 3 === 0 ? "Perlu pengecekan ulang dokumen pendukung" : "",
+      disetujui: false, // Status persetujuan awal
     }));
 
     setCapaian(capaianWithDetails);
   }, []);
 
-  // Filter dan search functions
+  // Filter data berdasarkan periode dan status
   const filteredCapaian = capaian.filter((item) => {
     const matchesStatus =
-      filterStatus === "semua" || item.status === filterStatus;
+      filterStatus === "semua" ||
+      (filterStatus === "disetujui" && item.disetujui) ||
+      (filterStatus === "ditolak" &&
+        !item.disetujui &&
+        item.status !== "validasi") ||
+      (filterStatus === "validasi" && item.status === "validasi");
+
     const matchesSearch =
-      item.pencapaian.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.deskripsi.toLowerCase().includes(searchTerm.toLowerCase()) ||
       getDetailEvaluasi(item.id_evaluasi)
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
+
     return matchesStatus && matchesSearch;
   });
 
+  // Toggle status persetujuan
+  const togglePersetujuan = (id) => {
+    setCapaian(
+      capaian.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              disetujui: !item.disetujui,
+              status: !item.disetujui ? "disetujui" : "validasi",
+              catatan: !item.disetujui ? "" : item.catatan,
+            }
+          : item
+      )
+    );
+  };
+
   // Action Functions
   const handleApprove = (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menyetujui capaian ini?")) {
-      setCapaian(
-        capaian.map((item) =>
-          item.id === id ? { ...item, status: "disetujui" } : item
-        )
-      );
-      alert("Capaian berhasil disetujui!");
-    }
+    setCapaian(
+      capaian.map((item) =>
+        item.id === id
+          ? { ...item, disetujui: true, status: "disetujui", catatan: "" }
+          : item
+      )
+    );
   };
 
   const handleReject = (id) => {
@@ -71,22 +125,11 @@ const ValidasiCapaian = () => {
     if (catatan !== null) {
       setCapaian(
         capaian.map((item) =>
-          item.id === id ? { ...item, status: "ditolak", catatan } : item
+          item.id === id
+            ? { ...item, disetujui: false, status: "ditolak", catatan }
+            : item
         )
       );
-      alert("Capaian berhasil ditolak!");
-    }
-  };
-
-  const handleRequestRevision = (id) => {
-    const catatan = prompt("Masukkan permintaan revisi:");
-    if (catatan !== null) {
-      setCapaian(
-        capaian.map((item) =>
-          item.id === id ? { ...item, status: "revisi", catatan } : item
-        )
-      );
-      alert("Permintaan revisi berhasil dikirim!");
     }
   };
 
@@ -95,8 +138,8 @@ const ValidasiCapaian = () => {
       `Detail Capaian #${capaianItem.id}\n\n` +
         `Evaluasi: ${getDetailEvaluasi(capaianItem.id_evaluasi)}\n` +
         `Auditor: ${capaianItem.auditor}\n` +
-        `Pencapaian: ${capaianItem.pencapaian}\n` +
-        `Status: ${getStatusLabel(capaianItem.status)}\n` +
+        `Capaian: ${capaianItem.deskripsi}\n` +
+        `Status: ${capaianItem.disetujui ? "Disetujui" : "Belum Disetujui"}\n` +
         `Tanggal Input: ${capaianItem.tanggal_input}\n` +
         `${capaianItem.catatan ? `Catatan: ${capaianItem.catatan}` : ""}`
     );
@@ -104,7 +147,10 @@ const ValidasiCapaian = () => {
 
   const handleDownloadBukti = (bukti) => {
     alert(`Mengunduh file: ${bukti}`);
-    console.log(`Downloading: ${bukti}`);
+  };
+
+  const handlePeriodeChange = (e) => {
+    setSelectedPeriode(e.target.value);
   };
 
   // Helper functions
@@ -124,81 +170,26 @@ const ValidasiCapaian = () => {
     }`;
   };
 
-  const getStatusLabel = (status) => {
-    const statusLabels = {
-      validasi: "Menunggu Validasi",
-      disetujui: "Disetujui",
-      ditolak: "Ditolak",
-      revisi: "Perlu Revisi",
-    };
-    return statusLabels[status] || status;
-  };
-
-  const getStatusBadge = (status) => {
-    const statusConfig = {
-      validasi: {
-        color: "bg-yellow-100 text-yellow-800 border border-yellow-200",
-        icon: FiEye,
-      },
-      disetujui: {
-        color: "bg-green-100 text-green-800 border border-green-200",
-        icon: FiCheckCircle,
-      },
-      ditolak: {
-        color: "bg-red-100 text-red-800 border border-red-200",
-        icon: FiXCircle,
-      },
-      revisi: {
-        color: "bg-orange-100 text-orange-800 border border-orange-200",
-        icon: FiXCircle,
-      },
-    };
-
-    const config = statusConfig[status] || statusConfig.validasi;
-    const IconComponent = config.icon;
-
-    return (
-      <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${config.color}`}
-      >
-        <IconComponent className="mr-1" size={14} />
-        {getStatusLabel(status)}
-      </span>
-    );
-  };
-
-  const getActionButtons = (capaianItem) => {
-    if (
-      capaianItem.status === "disetujui" ||
-      capaianItem.status === "ditolak"
-    ) {
-      return <span className="text-gray-400 text-sm">Telah diproses</span>;
+  const getStatusBadge = (disetujui, status) => {
+    if (status === "validasi") {
+      return (
+        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+          <FiEye className="mr-1" size={14} />
+          Menunggu Validasi
+        </span>
+      );
     }
 
-    return (
-      <div className="flex space-x-2">
-        <button
-          onClick={() => handleApprove(capaianItem.id)}
-          className="flex items-center px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm"
-        >
-          <FiCheckCircle className="mr-1" size={14} />
-          Approve
-        </button>
-        <button
-          onClick={() => handleRequestRevision(capaianItem.id)}
-          className="flex items-center px-3 py-1 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200 text-sm"
-        >
-          <FiXCircle className="mr-1" size={14} />
-          Revisi
-        </button>
-        <button
-          onClick={() => handleReject(capaianItem.id)}
-          className="flex items-center px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm"
-        >
-          <FiXCircle className="mr-1" size={14} />
-          Reject
-        </button>
-      </div>
+    return disetujui ? (
+      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">
+        <FiCheckCircle className="mr-1" size={14} />
+        Disetujui
+      </span>
+    ) : (
+      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 border border-red-200">
+        <FiXCircle className="mr-1" size={14} />
+        Ditolak
+      </span>
     );
   };
 
@@ -206,9 +197,10 @@ const ValidasiCapaian = () => {
   const stats = {
     total: capaian.length,
     validasi: capaian.filter((item) => item.status === "validasi").length,
-    disetujui: capaian.filter((item) => item.status === "disetujui").length,
-    ditolak: capaian.filter((item) => item.status === "ditolak").length,
-    revisi: capaian.filter((item) => item.status === "revisi").length,
+    disetujui: capaian.filter((item) => item.disetujui).length,
+    ditolak: capaian.filter(
+      (item) => !item.disetujui && item.status !== "validasi"
+    ).length,
   };
 
   return (
@@ -222,12 +214,47 @@ const ValidasiCapaian = () => {
         <div className="w-20 h-1 bg-red-500 mt-2 rounded-full"></div>
       </div>
 
+      {/* Filter Periode */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex-1">
+            <label
+              htmlFor="periode"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Pilih Periode Validasi
+            </label>
+            <select
+              id="periode"
+              value={selectedPeriode}
+              onChange={handlePeriodeChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+            >
+              {periodeOptions.map((periode) => (
+                <option key={periode.id} value={periode.id}>
+                  {periode.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Info Periode Terpilih */}
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-sm text-red-800 font-medium">
+              Periode yang dipilih:{" "}
+              {periodeOptions.find((p) => p.id === parseInt(selectedPeriode))
+                ?.label || "Pilih periode"}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total</p>
+              <p className="text-sm font-medium text-gray-600">Total Capaian</p>
               <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
             </div>
             <FiFileText className="text-blue-500 text-xl" />
@@ -237,7 +264,9 @@ const ValidasiCapaian = () => {
         <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Menunggu</p>
+              <p className="text-sm font-medium text-gray-600">
+                Menunggu Validasi
+              </p>
               <p className="text-2xl font-bold text-gray-900">
                 {stats.validasi}
               </p>
@@ -269,16 +298,6 @@ const ValidasiCapaian = () => {
             <FiXCircle className="text-red-500 text-xl" />
           </div>
         </div>
-
-        <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-orange-500">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Revisi</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.revisi}</p>
-            </div>
-            <FiXCircle className="text-orange-500 text-xl" />
-          </div>
-        </div>
       </div>
 
       {/* Filters and Search */}
@@ -293,7 +312,7 @@ const ValidasiCapaian = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Cari berdasarkan evaluasi atau pencapaian..."
+              placeholder="Cari berdasarkan evaluasi atau capaian..."
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
             />
           </div>
@@ -312,7 +331,6 @@ const ValidasiCapaian = () => {
               <option value="validasi">Menunggu Validasi</option>
               <option value="disetujui">Disetujui</option>
               <option value="ditolak">Ditolak</option>
-              <option value="revisi">Perlu Revisi</option>
             </select>
           </div>
         </div>
@@ -323,58 +341,47 @@ const ValidasiCapaian = () => {
         <div className="p-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
             <FiFileText className="mr-2 text-red-500" />
-            Daftar Capaian yang Perlu Validasi
+            Daftar Capaian -{" "}
+            {periodeOptions.find((p) => p.id === parseInt(selectedPeriode))
+              ?.label || "Semua Periode"}
           </h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full border border-gray-300">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <tr className="bg-orange-500 text-white text-sm">
+                <th className="px-4 py-3 text-left border border-gray-300">
                   ID
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Evaluasi
+                <th className="px-4 py-3 text-left border border-gray-300 w-2/5">
+                  Indikator Kinerja Utama (IKU)
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Auditor
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left border border-gray-300">
                   Capaian
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left border border-gray-300">
                   Bukti
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left border border-gray-300">
                   Status
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Aksi
+                <th className="px-4 py-3 text-center border border-gray-300">
+                  Validasi
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody>
               {filteredCapaian.map((capaianItem) => (
                 <tr
                   key={capaianItem.id}
-                  className="hover:bg-gray-50 transition-colors duration-150"
+                  className="hover:bg-gray-50 text-sm border-b border-gray-300"
                 >
-                  <td className="px-4 py-3 text-sm text-gray-900 font-medium">
+                  <td className="px-4 py-3 border border-gray-300 font-medium">
                     {capaianItem.id}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-900">
-                    <div className="max-w-xs">
-                      {getDetailEvaluasi(capaianItem.id_evaluasi)}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    {capaianItem.auditor}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
+                  <td className="px-4 py-3 border border-gray-300">
                     <div className="max-w-md">
-                      <div className="truncate" title={capaianItem.pencapaian}>
-                        {capaianItem.pencapaian}
-                      </div>
+                      {getDetailEvaluasi(capaianItem.id_evaluasi)}
                       <button
                         onClick={() => handleViewDetail(capaianItem)}
                         className="text-blue-600 hover:text-blue-800 text-xs mt-1 flex items-center"
@@ -384,7 +391,10 @@ const ValidasiCapaian = () => {
                       </button>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-sm">
+                  <td className="px-4 py-3 border border-gray-300">
+                    {capaianItem.deskripsi}
+                  </td>
+                  <td className="px-4 py-3 border border-gray-300">
                     {capaianItem.bukti ? (
                       <button
                         onClick={() => handleDownloadBukti(capaianItem.bukti)}
@@ -397,16 +407,33 @@ const ValidasiCapaian = () => {
                       <span className="text-gray-400 text-sm">Tidak ada</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-sm">
-                    {getStatusBadge(capaianItem.status)}
+                  <td className="px-4 py-3 border border-gray-300">
+                    {getStatusBadge(capaianItem.disetujui, capaianItem.status)}
                     {capaianItem.catatan && (
                       <div className="text-xs text-gray-500 mt-1 max-w-xs">
                         {capaianItem.catatan}
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-sm">
-                    {getActionButtons(capaianItem)}
+                  <td className="px-4 py-3 border border-gray-300 text-center">
+                    <div className="flex justify-center space-x-2">
+                      <button
+                        onClick={() => togglePersetujuan(capaianItem.id)}
+                        className={`flex items-center px-3 py-1 rounded-lg transition-colors duration-200 text-sm ${
+                          capaianItem.disetujui
+                            ? "bg-green-600 text-white hover:bg-green-700"
+                            : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+                        }`}
+                        title={
+                          capaianItem.disetujui
+                            ? "Batalkan Persetujuan"
+                            : "Setujui"
+                        }
+                      >
+                        <FiCheck className="mr-1" size={14} />
+                        {capaianItem.disetujui ? "Disetujui" : "Setujui"}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -423,30 +450,33 @@ const ValidasiCapaian = () => {
             </div>
           )}
         </div>
+
+        {/* Footer Tabel */}
+        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+          <p className="text-sm text-gray-600">
+            Menampilkan {filteredCapaian.length} data capaian
+          </p>
+        </div>
       </div>
 
-      {/* Legend */}
-      <div className="mt-6 bg-white rounded-lg shadow-md p-4">
-        <h4 className="text-sm font-medium text-gray-900 mb-3">
-          Keterangan Status:
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
-            <span>Menunggu Validasi - Perlu ditinjau</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-            <span>Disetujui - Telah divalidasi</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-            <span>Ditolak - Tidak memenuhi syarat</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
-            <span>Perlu Revisi - Butuh perbaikan</span>
-          </div>
+      {/* Info Tambahan */}
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-blue-800 mb-1">
+            Cara Validasi
+          </h3>
+          <p className="text-xs text-blue-600">
+            Klik tombol "Setujui" untuk menyetujui capaian, atau "Tolak" untuk
+            menolak dengan memberikan alasan.
+          </p>
+        </div>
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-green-800 mb-1">
+            Status Validasi
+          </h3>
+          <p className="text-xs text-green-600">
+            Status akan berubah otomatis ketika tombol validasi diklik.
+          </p>
         </div>
       </div>
     </div>

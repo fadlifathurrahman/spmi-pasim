@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
 import {
   FiHome,
-  FiUsers,
   FiBarChart2,
   FiChevronDown,
   FiChevronRight,
-  FiBook,
-  FiArchive,
   FiTarget,
   FiCalendar,
-  FiCheckSquare,
   FiFileText,
   FiTrendingUp,
-  FiUserCheck,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
@@ -72,13 +67,10 @@ const SideBar = ({ isOpen, closeSidebar }) => {
         </h1>
       </div>
 
-      {/* Program Studi */}
-      <div className="flex items-center justify-center">
-        <p className="text-xl font-bold text-black mb-4">
-          S1 Teknik Informatika
-        </p>
+      <div className="border-b-2 border-red-300 "></div>
+      <div>
+        <h1>Hallo Admin</h1>
       </div>
-
       <div className="border-b-2 border-red-300 "></div>
 
       {/* Menu Items */}
@@ -161,23 +153,6 @@ const SideBar = ({ isOpen, closeSidebar }) => {
               </ul>
             )}
           </li>
-
-          {/* Validasi Capaian */}
-          {(userRole === "admin" ||
-            userRole === "kaprodi" ||
-            userRole === "spmi") && (
-            <li>
-              <Link
-                to="/validasi-capaian"
-                className="flex items-center p-3 rounded-lg hover:bg-red-50 font-medium"
-                onClick={handleLinkClick}
-              >
-                <FiUserCheck className="mr-2 text-black" />
-                Validasi Capaian
-              </Link>
-            </li>
-          )}
-
           {/* Laporan Prodi (Bukan Dropdown) */}
           <li>
             <Link
@@ -186,7 +161,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
               onClick={handleLinkClick}
             >
               <FiBarChart2 className="mr-2 text-black" />
-              Laporan Prodi
+              Logout
             </Link>
           </li>
         </ul>

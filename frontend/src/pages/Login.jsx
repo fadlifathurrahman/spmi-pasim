@@ -19,13 +19,19 @@ function Login() {
     }));
   };
 
+  // Fungsi alert yang lebih baik dengan menggunakan state React
   const showAlert = (type, message) => {
-    // Buat elemen alert custom
+    // Hapus alert sebelumnya jika ada
+    const existingAlert = document.querySelector(".custom-alert");
+    if (existingAlert) {
+      existingAlert.remove();
+    }
+
     const alertDiv = document.createElement("div");
-    alertDiv.className = `fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-lg shadow-lg ${
+    alertDiv.className = `custom-alert fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-4 rounded-lg shadow-lg ${
       type === "success"
-        ? "bg-green-100 text-green-800"
-        : "bg-red-100 text-red-800"
+        ? "bg-green-100 text-green-800 border border-green-300"
+        : "bg-red-100 text-red-800 border border-red-300"
     }`;
     alertDiv.innerHTML = `
       <div class="flex items-center">
@@ -36,51 +42,71 @@ function Login() {
               : "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           }"></path>
         </svg>
-        <span>${message}</span>
+        <span class="font-medium">${message}</span>
       </div>
     `;
 
-    // Tambahkan ke body
     document.body.appendChild(alertDiv);
 
-    // Hapus setelah 3 detik
     setTimeout(() => {
-      alertDiv.remove();
+      if (alertDiv.parentNode) {
+        alertDiv.remove();
+      }
     }, 3000);
   };
 
   const handleLogin = (e) => {
     e.preventDefault();
+
+    // Validasi form
+    if (!formData.email || !formData.password) {
+      showAlert("error", "Harap isi email dan password!");
+      return;
+    }
+
     setIsLoading(true);
 
     // Simulate API call delay
     setTimeout(() => {
-      // Find user in dataUser array
-      const user = dataUser.find(
-        (user) =>
-          user.email === formData.email && user.password === formData.password
-      );
+      try {
+        // Find user in dataUser array
+        const user = dataUser.find(
+          (user) =>
+            user.email === formData.email && user.password === formData.password
+        );
 
-      if (user) {
-        // Save user data to localStorage
-        localStorage.setItem("currentUser", JSON.stringify(user));
+        if (user) {
+          // Remove password from user data before storing (security best practice)
+          const { password, ...userWithoutPassword } = user;
 
-        // Show success alert
-        showAlert("success", "Login berhasil! Mengarahkan ke dashboard...");
+          // Save user data to localStorage
+          localStorage.setItem(
+            "currentUser",
+            JSON.stringify(userWithoutPassword)
+          );
 
-        // Redirect after delay
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000);
-      } else {
-        // Show error alert
-        showAlert("error", "Email atau password salah!");
+          // Also save login timestamp
+          localStorage.setItem("loginTime", new Date().toISOString());
+
+          showAlert("success", "Login berhasil! Mengarahkan ke dashboard...");
+
+          // Redirect after delay
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 2000);
+        } else {
+          showAlert("error", "Email atau password salah!");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        showAlert("error", "Terjadi kesalahan saat login");
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
     }, 1000);
   };
 
+  // Sisa kode JSX tetap sama...
   return (
     <div className="flex h-screen bg-white">
       {/* Left Side - Image */}
@@ -137,9 +163,10 @@ function Login() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
                   placeholder="email@unpasim.ac.id"
                   required
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -162,15 +189,16 @@ function Login() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
                   placeholder="••••••••"
                   required
+                  disabled={isLoading}
                 />
               </div>
               <div className="mt-2 flex justify-end">
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-red-600 hover:text-red-800"
+                  className="text-sm text-red-600 hover:text-red-800 transition duration-200"
                 >
                   Lupa password?
                 </Link>
@@ -181,7 +209,7 @@ function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center items-center py-3 px-4 bg-red-800 hover:bg-red-700 text-white font-medium rounded-lg transition duration-200 shadow-lg disabled:bg-red-600 disabled:opacity-70"
+              className="w-full flex justify-center items-center py-3 px-4 bg-red-800 hover:bg-red-700 text-white font-medium rounded-lg transition duration-200 shadow-lg disabled:bg-red-600 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <span className="flex items-center">
@@ -215,12 +243,12 @@ function Login() {
               )}
             </button>
 
-            {/* Register Link - Simple text */}
+            {/* Register Link */}
             <div className="text-center text-sm text-gray-600">
               Tidak punya akun?{" "}
               <Link
                 to="/register"
-                className="text-red-600 hover:text-red-800 font-medium"
+                className="text-red-600 hover:text-red-800 font-medium transition duration-200"
               >
                 Hubungi Admin
               </Link>

@@ -1,48 +1,37 @@
 import { useState, useEffect } from "react";
 import {
-  evaluasiData,
+  standarData,
+  substandarData,
+  indikatorData,
+  targetData,
+  capaianData,
+  evaluasiData as initialEvaluasi,
   periodeData,
   tahunAkademikData,
-  prodiData,
 } from "../utils/Data";
+import { FiDownload, FiCheckCircle, FiTarget, FiBook } from "react-icons/fi";
 
 const Evaluasi = () => {
   const [selectedPeriode, setSelectedPeriode] = useState("");
   const [periodeOptions, setPeriodeOptions] = useState([]);
-  const [filteredEvaluasi, setFilteredEvaluasi] = useState([]);
+  const [filteredEvaluasi, setFilteredEvaluasi] = useState(initialEvaluasi);
 
-  // Inisialisasi data periode
   useEffect(() => {
     const formattedPeriodes = periodeData.map((periode) => {
       const tahunAkademik = tahunAkademikData.find(
         (tahun) => tahun.id === periode.id_tahunakademik
       );
-      const prodi = prodiData.find((prodi) => prodi.id === periode.id_prodi);
 
       return {
         id: periode.id,
-        label: `${tahunAkademik?.rentang || "Tahun tidak ditemukan"} - ${
-          prodi?.nama_prodi || "Prodi tidak ditemukan"
-        }`,
-        id_tahunakademik: periode.id_tahunakademik,
-        id_prodi: periode.id_prodi,
+        label: `${tahunAkademik?.rentang || "Tahun tidak ditemukan"}`,
       };
     });
 
     setPeriodeOptions(formattedPeriodes);
 
-    // Set periode pertama sebagai default
     if (formattedPeriodes.length > 0 && !selectedPeriode) {
       setSelectedPeriode(formattedPeriodes[0].id);
-    }
-  }, []);
-
-  // Filter data evaluasi berdasarkan periode yang dipilih
-  useEffect(() => {
-    if (selectedPeriode) {
-      // Untuk demo, kita akan menampilkan semua data evaluasi
-      // Dalam implementasi nyata, Anda akan memfilter berdasarkan periode
-      setFilteredEvaluasi(evaluasiData);
     }
   }, [selectedPeriode]);
 
@@ -50,103 +39,238 @@ const Evaluasi = () => {
     setSelectedPeriode(e.target.value);
   };
 
+  const handleCapaianChange = (id, value) => {
+    setFilteredEvaluasi((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, id_capaian: parseInt(value) } : item
+      )
+    );
+  };
+
+  const toggleVerifikasi = (id) => {
+    setFilteredEvaluasi((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, diverifikasi: !item.diverifikasi } : item
+      )
+    );
+  };
+
+  const getJoinedEvaluasi = () => {
+    return filteredEvaluasi.map((item) => {
+      const substandar = substandarData.find(
+        (s) => s.id === item.id_substandar
+      );
+      const standar = standarData.find((st) => st.id === item.id_standar);
+      const indikator = indikatorData.find((ik) => ik.id === item.id_indikator);
+      const target = targetData.find((t) => t.id === item.id_target);
+      const capaian = capaianData.find((c) => c.id === item.id_capaian);
+
+      return {
+        ...item,
+        standar: standar?.nama,
+        substandar: substandar?.nama,
+        indikator: indikator?.jenis,
+        target: target?.deskripsi,
+        capaian: capaian?.hasil || "",
+      };
+    });
+  };
+
+  const groupedByStandar = () => {
+    const data = getJoinedEvaluasi();
+    const grouped = {};
+    data.forEach((item) => {
+      if (!grouped[item.standar]) grouped[item.standar] = {};
+      if (!grouped[item.standar][item.substandar])
+        grouped[item.standar][item.substandar] = {};
+      if (!grouped[item.standar][item.substandar][item.indikator])
+        grouped[item.standar][item.substandar][item.indikator] = [];
+      grouped[item.standar][item.substandar][item.indikator].push(item);
+    });
+    return grouped;
+  };
+
+  // Statistik Card
+  const stats = {
+    standar: standarData.length,
+    substandar: substandarData.length,
+    capaianTerisi: filteredEvaluasi.filter((e) => e.id_capaian).length,
+    diverifikasi: filteredEvaluasi.filter((e) => e.diverifikasi).length,
+  };
+
+  const handleExportPDF = () => {
+    alert("Generate PDF nanti kita sambungkan ke library (contoh: jsPDF)");
+  };
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Standar Penelitian & Evaluasi
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-900">Evaluasi Standar</h1>
         <p className="text-gray-600 mt-2">
-          Berikut indikator kinerja utama beserta target capaian
+          Berikut indikator kinerja utama & tambahan beserta capaian
         </p>
         <div className="w-32 h-1 bg-red-500 mt-2 rounded-full"></div>
       </div>
 
-      {/* Filter Periode */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex-1">
-            <label
-              htmlFor="periode"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Pilih Periode Evaluasi
-            </label>
-            <select
-              id="periode"
-              value={selectedPeriode}
-              onChange={handlePeriodeChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
-            >
-              {periodeOptions.map((periode) => (
-                <option key={periode.id} value={periode.id}>
-                  {periode.label}
-                </option>
-              ))}
-            </select>
-          </div>
+      {/* Filter Periode + Button PDF */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-6 flex items-center gap-4">
+        <div className="flex-1">
+          <label
+            htmlFor="periode"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Pilih Periode Evaluasi
+          </label>
+          <select
+            id="periode"
+            value={selectedPeriode}
+            onChange={handlePeriodeChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+          >
+            {periodeOptions.map((periode) => (
+              <option key={periode.id} value={periode.id}>
+                {periode.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          onClick={handleExportPDF}
+          className="flex-1 flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+        >
+          <FiDownload className="mr-2" />
+          PDF
+        </button>
+      </div>
 
-          {/* Info Periode Terpilih */}
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-sm text-red-800 font-medium">
-              Periode yang dipilih:{" "}
-              {periodeOptions.find((p) => p.id === parseInt(selectedPeriode))
-                ?.label || "Pilih periode"}
-            </p>
+      {/* Statistik Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Jumlah Standar</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {stats.standar}
+              </p>
+            </div>
+            <FiBook className="text-blue-500 text-xl" />
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-purple-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Jumlah Substandar</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {stats.substandar}
+              </p>
+            </div>
+            <FiTarget className="text-purple-500 text-xl" />
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-yellow-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Capaian Terisi</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {stats.capaianTerisi}
+              </p>
+            </div>
+            <FiTarget className="text-yellow-500 text-xl" />
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Diverifikasi</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {stats.diverifikasi}
+              </p>
+            </div>
+            <FiCheckCircle className="text-green-500 text-xl" />
           </div>
         </div>
       </div>
 
       {/* Tabel Evaluasi */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">
-            Data Evaluasi -{" "}
-            {periodeOptions.find((p) => p.id === parseInt(selectedPeriode))
-              ?.label || "Semua Periode"}
-          </h2>
-        </div>
+      <div className="space-y-8">
+        {Object.entries(groupedByStandar()).map(([standar, substandars]) => (
+          <div key={standar} className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">{standar}</h2>
 
-        <div className="overflow-x-auto">
-          <table className="w-full border border-gray-300">
-            <thead>
-              <tr className="bg-orange-500 text-white text-sm">
-                <th className="px-4 py-3 text-left border border-gray-300 w-2/3">
-                  Indikator Kinerja Utama (IKU)
-                </th>
-                <th className="px-4 py-3 text-center border border-gray-300">
-                  Target Capaian
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredEvaluasi.length > 0 ? (
-                filteredEvaluasi.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50 text-sm">
-                    <td className="px-4 py-3 border border-gray-300">
-                      {item.indikator}
-                    </td>
-                    <td className="px-4 py-3 border border-gray-300 text-center">
-                      <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
-                        {item.target}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="2"
-                    className="px-4 py-8 text-center text-gray-500 border border-gray-300"
-                  >
-                    Tidak ada data evaluasi untuk periode yang dipilih
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+            {Object.entries(substandars).map(
+              ([substandar, indikatorGroups]) => (
+                <div key={substandar} className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                    {substandar}
+                  </h3>
+
+                  {Object.entries(indikatorGroups).map(([indikator, items]) => (
+                    <div key={indikator} className="mb-4">
+                      <table className="w-full border border-gray-300">
+                        <thead className="bg-orange-500 text-white">
+                          <tr>
+                            <th className="px-4 py-2 text-left border border-gray-300 w-2/5">
+                              {indikator}
+                            </th>
+                            <th className="px-4 py-2 text-center border border-gray-300 w-1/5">
+                              Capaian
+                            </th>
+                            <th className="px-4 py-2 text-center border border-gray-300 w-1/5">
+                              Diverifikasi
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {items.map((row) => (
+                            <tr
+                              key={row.id}
+                              className="hover:bg-gray-50 text-sm"
+                            >
+                              <td className="px-4 py-2 border border-gray-300">
+                                {row.target}
+                              </td>
+                              <td className="px-4 py-2 border border-gray-300 text-center">
+                                <select
+                                  value={row.id_capaian || ""}
+                                  onChange={(e) =>
+                                    handleCapaianChange(row.id, e.target.value)
+                                  }
+                                  className="border px-2 py-1 rounded"
+                                >
+                                  <option value="">-- Pilih --</option>
+                                  {capaianData.map((c) => (
+                                    <option key={c.id} value={c.id}>
+                                      {c.hasil}
+                                    </option>
+                                  ))}
+                                </select>
+                              </td>
+                              <td
+                                className="px-4 py-2 border border-gray-300 text-center cursor-pointer"
+                                onClick={() => toggleVerifikasi(row.id)}
+                              >
+                                {row.diverifikasi ? (
+                                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                    ✔ Ya
+                                  </span>
+                                ) : (
+                                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+                                    ✘ Tidak
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+                </div>
+              )
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,33 +1,4 @@
 // ==========================
-// Data Standar & Substandar
-// ==========================
-export const standarData = [
-    { id: 1, nama_standar: "Visi, Misi, Tujuan, dan Strategi", status: "tampil" },
-    { id: 2, nama_standar: "Tata Pamong, Tata Kelola, dan Kerjasama", status: "tampil" },
-    { id: 3, nama_standar: "Mahasiswa dan Lulusan", status: "tampil" },
-    { id: 4, nama_standar: "Sumber Daya Manusia", status: "tampil" },
-    { id: 5, nama_standar: "Keuangan, Sarana, dan Prasarana", status: "tampil" },
-    { id: 6, nama_standar: "Penelitian", status: "tampil" },
-    { id: 7, nama_standar: "Pengabdian kepada Masyarakat", status: "tampil" }
-];
-
-export const substandarData = [
-    { id: 1, id_standar: 1, nama_substandar: "Visi dan Misi", status: "tampil" },
-    { id: 2, id_standar: 1, nama_substandar: "Tujuan Strategis", status: "tampil" },
-    { id: 3, id_standar: 2, nama_substandar: "Struktur Organisasi", status: "tampil" },
-    { id: 4, id_standar: 2, nama_substandar: "Kerjasama Nasional", status: "tampil" },
-    { id: 5, id_standar: 3, nama_substandar: "Seleksi Mahasiswa Baru", status: "tampil" },
-    { id: 6, id_standar: 3, nama_substandar: "Proses Pembelajaran", status: "tampil" },
-    { id: 7, id_standar: 4, nama_substandar: "Rekrutmen Dosen", status: "tampil" },
-    { id: 8, id_standar: 4, nama_substandar: "Pengembangan Dosen", status: "tampil" },
-    { id: 9, id_standar: 5, nama_substandar: "Anggaran Pendidikan", status: "tampil" },
-    { id: 10, id_standar: 5, nama_substandar: "Fasilitas Pembelajaran", status: "tampil" },
-    { id: 11, id_standar: 6, nama_substandar: "Penelitian Dosen", status: "tampil" },
-    { id: 12, id_standar: 6, nama_substandar: "Publikasi Ilmiah", status: "tampil" },
-    { id: 13, id_standar: 7, nama_substandar: "Pengabdian Masyarakat", status: "tampil" }
-];
-
-// ==========================
 // Data Jenis Indikator
 // ==========================
 export const jenisIndikatorData = [
@@ -35,72 +6,61 @@ export const jenisIndikatorData = [
     { id: 2, kode: "IKT", nama_indikator: "Indikator Kinerja Tambahan", status: "tampil" }
 ];
 
-// ==========================
-// Data Target
-// ==========================
-export const targetData = [
-    { id: 1, deskripsi: "Visi misi disosialisasikan ke seluruh stakeholder", status: "tampil" },
-    { id: 2, deskripsi: "Tujuan strategis diterapkan di minimal 80% unit", status: "tampil" },
-    { id: 3, deskripsi: "Struktur organisasi berjalan efektif", status: "tampil" },
-    { id: 4, deskripsi: "Kerjasama dengan 5 universitas nasional", status: "tampil" },
-    { id: 5, deskripsi: "Seleksi mahasiswa baru transparan dan objektif", status: "tampil" }
-];
-
-// ==========================
-// Data Capaian
-// ==========================
-export const capaianData = [
-    {
-        id: 1,
-        deskripsi: "90% Sesuai",
-        status: "tampil"
-    },
-    {
-        id: 2,
-        deskripsi: "75% Sesuai",
-        status: "tampil"
-    },
-    {
-        id: 3,
-        deskripsi: "Tersedia",
-        status: "tampil"
-    },
-    {
-        id: 4,
-        deskripsi: "80% Sesuai",
-        status: "tampil"
-    },
-    {
-        id: 5,
-        deskripsi: "Tersedia",
-        status: "tampil"
-    },
-    {
-        id: 6,
-        deskripsi: "≥ 60%",
-        status: "tampil"
-    },
-    {
-        id: 7,
-        deskripsi: "Terlaksana",
-        status: "tampil"
-    },
-    {
-        id: 8,
-        deskripsi: "50% Sesuai",
-        status: "tampil"
-    },
-    {
-        id: 9,
-        deskripsi: "Tidak Tersedia",
-        status: "tampil"
-    },
-    {
-        id: 10,
-        deskripsi: "100% Sesuai",
-        status: "tampil"
-    }
-];
+// // ==========================
+// // Data Capaian
+// // ==========================
+// export const capaianData = [
+//     {
+//         id: 1,
+//         deskripsi: "90% Sesuai",
+//         status: "tampil"
+//     },
+//     {
+//         id: 2,
+//         deskripsi: "75% Sesuai",
+//         status: "tampil"
+//     },
+//     {
+//         id: 3,
+//         deskripsi: "Tersedia",
+//         status: "tampil"
+//     },
+//     {
+//         id: 4,
+//         deskripsi: "80% Sesuai",
+//         status: "tampil"
+//     },
+//     {
+//         id: 5,
+//         deskripsi: "Tersedia",
+//         status: "tampil"
+//     },
+//     {
+//         id: 6,
+//         deskripsi: "≥ 60%",
+//         status: "tampil"
+//     },
+//     {
+//         id: 7,
+//         deskripsi: "Terlaksana",
+//         status: "tampil"
+//     },
+//     {
+//         id: 8,
+//         deskripsi: "50% Sesuai",
+//         status: "tampil"
+//     },
+//     {
+//         id: 9,
+//         deskripsi: "Tidak Tersedia",
+//         status: "tampil"
+//     },
+//     {
+//         id: 10,
+//         deskripsi: "100% Sesuai",
+//         status: "tampil"
+//     }
+// ];
 
 // ==========================
 // Data Tahun Akademik & Periode
@@ -162,21 +122,21 @@ export const laporanProdiData = [
 export const dataUser = [
     {
         id: 1,
-        role: "spmi",
+        role: "admin",
         name: "Admin SPMI",
         email: "admin@gmail.com",
         password: "123"
     },
     {
         id: 2,
-        role: "auditor",
+        role: "user",
         name: "Auditor Internal 1",
         email: "auditor1@university.ac.id",
         password: "auditor123"
     },
     {
         id: 3,
-        role: "auditor",
+        role: "user",
         name: "Auditor Internal 2",
         email: "auditor2@university.ac.id",
         password: "auditor123"
@@ -184,18 +144,115 @@ export const dataUser = [
 ];
 
 
-// ==========================
-// Data Evaluasi (multi-periode)
-// ==========================
-export const evaluasiData = [
-    // STANDAR PENELITIAN – HASIL PENELITIAN
-    { id: 1, id_substandar: 11, id_jenisindikator: 1, indikator: "Tersedianya pedoman penelitian (usul dan pelaporan penelitian)", target: "Tersedia", status: "tampil" },
-    { id: 2, id_substandar: 11, id_jenisindikator: 1, indikator: "Jumlah penelitian dosen yang relevan dengan program studi per tahun", target: "1 penelitian/dosen", status: "tampil" },
-    { id: 3, id_substandar: 12, id_jenisindikator: 1, indikator: "Publikasi hasil penelitian pada jurnal nasional per tahun (%)", target: "≥ 50%", status: "tampil" },
-    { id: 4, id_substandar: 12, id_jenisindikator: 1, indikator: "Publikasi hasil penelitian pada jurnal internasional per tahun (%)", target: "≥ 10%", status: "tampil" },
-    { id: 5, id_substandar: 12, id_jenisindikator: 1, indikator: "Jumlah HKI/Paten karya ilmiah dosen per tahun", target: "Min. 1 HKI", status: "tampil" },
+// // ==========================
+// // Data Evaluasi (multi-periode)
+// // ==========================
+// export const evaluasiData = [
+//     // STANDAR PENELITIAN – HASIL PENELITIAN
+//     { id: 1, id_substandar: 11, id_jenisindikator: 1, indikator: "Tersedianya pedoman penelitian (usul dan pelaporan penelitian)", target: "Tersedia", status: "tampil" },
+//     { id: 2, id_substandar: 11, id_jenisindikator: 1, indikator: "Jumlah penelitian dosen yang relevan dengan program studi per tahun", target: "1 penelitian/dosen", status: "tampil" },
+//     { id: 3, id_substandar: 12, id_jenisindikator: 1, indikator: "Publikasi hasil penelitian pada jurnal nasional per tahun (%)", target: "≥ 50%", status: "tampil" },
+//     { id: 4, id_substandar: 12, id_jenisindikator: 1, indikator: "Publikasi hasil penelitian pada jurnal internasional per tahun (%)", target: "≥ 10%", status: "tampil" },
+//     { id: 5, id_substandar: 12, id_jenisindikator: 1, indikator: "Jumlah HKI/Paten karya ilmiah dosen per tahun", target: "Min. 1 HKI", status: "tampil" },
 
-    // STANDAR ISI PENELITIAN
-    { id: 6, id_substandar: 11, id_jenisindikator: 1, indikator: "Tersedianya peta jalan penelitian", target: "Tersedia", status: "tampil" },
-    { id: 7, id_substandar: 11, id_jenisindikator: 1, indikator: "Penelitian dilaksanakan sesuai dengan bidang keilmuan program studi", target: "90% sesuai", status: "tampil" },
+//     // STANDAR ISI PENELITIAN
+//     { id: 6, id_substandar: 11, id_jenisindikator: 1, indikator: "Tersedianya peta jalan penelitian", target: "Tersedia", status: "tampil" },
+//     { id: 7, id_substandar: 11, id_jenisindikator: 1, indikator: "Penelitian dilaksanakan sesuai dengan bidang keilmuan program studi", target: "90% sesuai", status: "tampil" },
+// ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Data Standar
+export const standarData = [
+    { id: 1, nama: "STANDAR PENDIDIKAN" },
+];
+
+// Data Substandar
+export const substandarData = [
+    { id: 1, id_standar: 1, nama: "STANDAR KOMPETENSI LULUSAN" },
+    { id: 2, id_standar: 1, nama: "STANDAR ISI PEMBELAJARAN" },
+];
+
+// Data Indikator
+export const indikatorData = [
+    { id: 1, jenis: "Indikator Kinerja Utama (IKU) " },
+    { id: 2, jenis: "Indikator Kinerja Tambahan (IKT) " },
+];
+
+// Data Target
+export const targetData = [
+    { id: 1, deskripsi: "Terdokumentasinya rumusan Capaian Pembelajaran Lulusan sesuai dengan kualifikasi KKNI dalam buku panduan program studi" },
+    { id: 2, deskripsi: "Terdokumentasinya kurikulum dengan Capaian Pembelajaran Lulusan" },
+    { id: 3, deskripsi: "Mahasiswa lulus dengan tepat waktu (untuk S1 : 4 – 4,5 tahun, dan untuk D3 : 3 – 3,5 tahun)" },
+    { id: 4, deskripsi: "Tersedianya kalender akademik" },
+    { id: 5, deskripsi: "Ketersediaan pedoman dan prosedur penilaian" },
+];
+
+// Data Capaian
+export const capaianData = [
+    { id: 1, hasil: "terdokumentasi" },
+    { id: 2, hasil: "tersedia" },
+    { id: 3, hasil: "tersedia" },
+    { id: 4, hasil: "Sesuai" },
+    { id: 5, hasil: "Ada" },
+];
+
+// Gabungan evaluasi (tabel)
+export const evaluasiData = [
+    {
+        id: 1,
+        id_standar: 1,
+        id_substandar: 1,
+        id_indikator: 1,
+        id_target: 1,
+        id_capaian: 1,
+        diverifikasi: true,
+    },
+    {
+        id: 2,
+        id_standar: 1,
+        id_substandar: 1,
+        id_indikator: 1,
+        id_target: 2,
+        id_capaian: 2,
+        diverifikasi: true,
+    },
+    {
+        id: 3,
+        id_standar: 1,
+        id_substandar: 1,
+        id_indikator: 1,
+        id_target: 3,
+        id_capaian: 3,
+        diverifikasi: false,
+    },
+    {
+        id: 4,
+        id_standar: 1,
+        id_substandar: 2,
+        id_indikator: 1,
+        id_target: 4,
+        id_capaian: 4,
+        diverifikasi: true,
+    },
+    {
+        id: 5,
+        id_standar: 1,
+        id_substandar: 2,
+        id_indikator: 2,
+        id_target: 5,
+        id_capaian: 5,
+        diverifikasi: false,
+    },
 ];
