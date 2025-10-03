@@ -56,8 +56,8 @@ export const dataUser = [
         id: 2,
         role: "user",
         name: "Auditor Internal 1",
-        email: "auditor1@university.ac.id",
-        password: "auditor123",
+        email: "auditor@gmail.com",
+        password: "123",
         status: "aktif"
     },
     {

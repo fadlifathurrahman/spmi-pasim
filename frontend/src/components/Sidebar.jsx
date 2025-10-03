@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import {
   FiHome,
@@ -14,7 +15,8 @@ import { Link } from "react-router-dom";
 
 const SideBar = ({ isOpen, closeSidebar }) => {
   const [isEvaluasiOpen, setIsEvaluasiOpen] = useState(false);
-  const [userRole, setUserRole] = useState("admin");
+  const [userRole, setUserRole] = useState("");
+  const [userName, setUserName] = useState("");
   const [prodiList, setProdiList] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -23,6 +25,15 @@ const SideBar = ({ isOpen, closeSidebar }) => {
     if (user) {
       setCurrentUser(user);
       setUserRole(user.role);
+
+      // Set nama user berdasarkan role
+      if (user.role === "admin") {
+        setUserName("Unit SPMI");
+      } else if (user.role === "user") {
+        setUserName("Auditor Internal");
+      } else {
+        setUserName(user.name || "User");
+      }
     }
 
     // Data prodi dari file data yang Anda berikan
@@ -92,11 +103,10 @@ const SideBar = ({ isOpen, closeSidebar }) => {
             <FiUser className="text-white text-lg" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-red-800 truncate">
-              {currentUser?.name || "Admin SPMI"}
-            </p>
+            <p className="font-semibold text-red-800 truncate">{userName}</p>
             <p className="text-xs text-red-600 opacity-80 truncate capitalize">
-              {userRole} • <span className="text-green-600">Online</span>
+              {userRole === "admin" ? "Unit SPMI" : "Auditor Internal"} •{" "}
+              <span className="text-green-600">Online</span>
             </p>
           </div>
         </div>
