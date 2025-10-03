@@ -48,6 +48,52 @@ const TahunPeriode = () => {
     setProdi(prodiData);
   }, []);
 
+  // Validasi duplikasi periode
+  const isPeriodeDuplicate = (id_tahunakademik, id_prodi, excludeId = null) => {
+    return periode.some((periodeItem) => {
+      // Skip item yang sedang diedit
+      if (excludeId && periodeItem.id === excludeId) {
+        return false;
+      }
+      return (
+        periodeItem.id_tahunakademik === parseInt(id_tahunakademik) &&
+        periodeItem.id_prodi === parseInt(id_prodi)
+      );
+    });
+  };
+
+  // Validasi duplikasi tahun akademik
+  const isTahunAkademikDuplicate = (rentang, excludeId = null) => {
+    return tahunAkademik.some((tahun) => {
+      if (excludeId && tahun.id === excludeId) {
+        return false;
+      }
+      return tahun.rentang === rentang;
+    });
+  };
+
+  // Validasi duplikasi fakultas
+  const isFakultasDuplicate = (nama_fakultas, excludeId = null) => {
+    return fakultas.some((fakultasItem) => {
+      if (excludeId && fakultasItem.id === excludeId) {
+        return false;
+      }
+      return (
+        fakultasItem.nama_fakultas.toLowerCase() === nama_fakultas.toLowerCase()
+      );
+    });
+  };
+
+  // Validasi duplikasi prodi
+  const isProdiDuplicate = (nama_prodi, excludeId = null) => {
+    return prodi.some((prodiItem) => {
+      if (excludeId && prodiItem.id === excludeId) {
+        return false;
+      }
+      return prodiItem.nama_prodi.toLowerCase() === nama_prodi.toLowerCase();
+    });
+  };
+
   // Tahun Akademik Functions
   const handleAddTahun = () => {
     setShowTahunForm(true);
@@ -72,6 +118,19 @@ const TahunPeriode = () => {
   const handleSaveTahun = () => {
     if (!formData.rentang.trim()) {
       alert("Rentang tahun akademik tidak boleh kosong");
+      return;
+    }
+
+    // Validasi format tahun akademik
+    const tahunRegex = /^\d{4}\/\d{4}$/;
+    if (!tahunRegex.test(formData.rentang)) {
+      alert("Format tahun akademik harus seperti: 2024/2025");
+      return;
+    }
+
+    // Validasi duplikasi tahun akademik
+    if (isTahunAkademikDuplicate(formData.rentang, editingTahun?.id)) {
+      alert(`Tahun akademik ${formData.rentang} sudah ada!`);
       return;
     }
 
@@ -131,6 +190,20 @@ const TahunPeriode = () => {
   const handleSavePeriode = () => {
     if (!formData.id_tahunakademik || !formData.id_prodi) {
       alert("Tahun akademik dan program studi harus dipilih");
+      return;
+    }
+
+    // Validasi duplikasi periode
+    if (
+      isPeriodeDuplicate(
+        formData.id_tahunakademik,
+        formData.id_prodi,
+        editingPeriode?.id
+      )
+    ) {
+      const tahun = getNamaTahunAkademik(parseInt(formData.id_tahunakademik));
+      const prodiName = getNamaProdi(parseInt(formData.id_prodi));
+      alert(`Periode ${tahun} - ${prodiName} sudah ada!`);
       return;
     }
 
@@ -194,6 +267,12 @@ const TahunPeriode = () => {
       return;
     }
 
+    // Validasi duplikasi fakultas
+    if (isFakultasDuplicate(formData.nama_fakultas, editingFakultas?.id)) {
+      alert(`Fakultas "${formData.nama_fakultas}" sudah ada!`);
+      return;
+    }
+
     if (editingFakultas) {
       // Update fakultas
       setFakultas(
@@ -248,6 +327,12 @@ const TahunPeriode = () => {
   const handleSaveProdi = () => {
     if (!formData.nama_prodi.trim() || !formData.id_fakultas) {
       alert("Nama program studi dan fakultas harus diisi");
+      return;
+    }
+
+    // Validasi duplikasi prodi
+    if (isProdiDuplicate(formData.nama_prodi, editingProdi?.id)) {
+      alert(`Program Studi "${formData.nama_prodi}" sudah ada!`);
       return;
     }
 
