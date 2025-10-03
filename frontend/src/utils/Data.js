@@ -38,16 +38,6 @@ export const prodiData = [
     { id: 4, nama_prodi: "Akuntansi", id_fakultas: 2, status: "aktif" }
 ];
 
-// ==========================
-// Data Laporan Prodi
-// ==========================
-export const laporanProdiData = [
-    { id: 1, id_prodi: 1, id_evaluasi: 1, status: "aktif" },
-    { id: 2, id_prodi: 1, id_evaluasi: 2, status: "aktif" },
-    { id: 3, id_prodi: 2, id_evaluasi: 3, status: "aktif" },
-    { id: 4, id_prodi: 3, id_evaluasi: 4, status: "pasif" },
-    { id: 5, id_prodi: 3, id_evaluasi: 5, status: "pasif" }
-];
 
 // ==========================
 // Data User (ditambah field status)
@@ -330,7 +320,20 @@ export const targetData = [
     { id: 58, deskripsi: "≥30% PkM didanai oleh sumber eksternal", status: "aktif" },
 ];
 
-// Data Capaian (unique, termasuk angka/rasio, tanpa duplikasi)
+
+// ==========================
+// Data Laporan Prodi
+// ==========================
+export const laporanProdiData = [
+    { id: 1, id_prodi: 1, id_evaluasi: 1, status: "aktif" },
+    { id: 2, id_prodi: 1, id_evaluasi: 2, status: "aktif" },
+    { id: 3, id_prodi: 2, id_evaluasi: 3, status: "aktif" },
+    { id: 4, id_prodi: 3, id_evaluasi: 4, status: "pasif" },
+    { id: 5, id_prodi: 3, id_evaluasi: 5, status: "pasif" }
+];
+
+
+// Data Capaian
 export const capaianData = [
     { id: 1, hasil: "Terdokumentasi", status: "aktif" },
     { id: 2, hasil: "Tepat waktu", status: "aktif" },
@@ -354,8 +357,6 @@ export const capaianData = [
     { id: 20, hasil: "Berfungsi", status: "aktif" },
     { id: 21, hasil: "Berdampak", status: "aktif" },
     { id: 22, hasil: "Terlibat", status: "aktif" },
-
-    // Capaian numerik / persentase
     { id: 23, hasil: "≥70%", status: "aktif" },
     { id: 24, hasil: "≥80%", status: "aktif" },
     { id: 25, hasil: "≥90%", status: "aktif" },
@@ -364,10 +365,14 @@ export const capaianData = [
     { id: 28, hasil: "4–4,5 tahun", status: "aktif" },
 ];
 
-// Gabungan evaluasi (tabel)
+// Gabungan evaluasi (tabel) - Diperbarui dengan periode dan data yang lebih banyak
 export const evaluasiData = [
+    // ==========================
+    // PERIODE 1: Teknik Informatika - 2023/2024
+    // ==========================
     {
         id: 1,
+        id_periode: 1,
         id_standar: 1,
         id_substandar: 1,
         id_indikator: 1,
@@ -378,8 +383,9 @@ export const evaluasiData = [
     },
     {
         id: 2,
+        id_periode: 1,
         id_standar: 1,
-        id_substandar: 1,
+        id_substandar: 2,
         id_indikator: 1,
         id_target: 2,
         id_capaian: 2,
@@ -388,8 +394,9 @@ export const evaluasiData = [
     },
     {
         id: 3,
+        id_periode: 1,
         id_standar: 1,
-        id_substandar: 1,
+        id_substandar: 3,
         id_indikator: 1,
         id_target: 3,
         id_capaian: 3,
@@ -398,22 +405,421 @@ export const evaluasiData = [
     },
     {
         id: 4,
-        id_standar: 1,
-        id_substandar: 2,
+        id_periode: 1,
+        id_standar: 2,
+        id_substandar: 4,
         id_indikator: 1,
         id_target: 4,
         id_capaian: 4,
         diverifikasi: true,
-        status: "pasif"
+        status: "aktif"
     },
     {
         id: 5,
-        id_standar: 1,
-        id_substandar: 2,
+        id_periode: 1,
+        id_standar: 2,
+        id_substandar: 5,
         id_indikator: 2,
         id_target: 5,
         id_capaian: 5,
         diverifikasi: false,
-        status: "pasif"
+        status: "aktif"
     },
+    {
+        id: 6,
+        id_periode: 1,
+        id_standar: 2,
+        id_substandar: 6,
+        id_indikator: 1,
+        id_target: 6,
+        id_capaian: 6,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 7,
+        id_periode: 1,
+        id_standar: 3,
+        id_substandar: 7,
+        id_indikator: 1,
+        id_target: 7,
+        id_capaian: 7,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 8,
+        id_periode: 1,
+        id_standar: 3,
+        id_substandar: 8,
+        id_indikator: 2,
+        id_target: 8,
+        id_capaian: 8,
+        diverifikasi: false,
+        status: "aktif"
+    },
+    {
+        id: 9,
+        id_periode: 1,
+        id_standar: 3,
+        id_substandar: 9,
+        id_indikator: 1,
+        id_target: 9,
+        id_capaian: 9,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 10,
+        id_periode: 1,
+        id_standar: 4,
+        id_substandar: 10,
+        id_indikator: 1,
+        id_target: 10,
+        id_capaian: 10,
+        diverifikasi: true,
+        status: "aktif"
+    },
+
+    // ==========================
+    // PERIODE 2: Sistem Informasi - 2023/2024
+    // ==========================
+    {
+        id: 11,
+        id_periode: 2,
+        id_standar: 1,
+        id_substandar: 1,
+        id_indikator: 1,
+        id_target: 1,
+        id_capaian: 1,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 12,
+        id_periode: 2,
+        id_standar: 1,
+        id_substandar: 2,
+        id_indikator: 1,
+        id_target: 2,
+        id_capaian: 2,
+        diverifikasi: false,
+        status: "aktif"
+    },
+    {
+        id: 13,
+        id_periode: 2,
+        id_standar: 1,
+        id_substandar: 3,
+        id_indikator: 2,
+        id_target: 3,
+        id_capaian: 3,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 14,
+        id_periode: 2,
+        id_standar: 2,
+        id_substandar: 4,
+        id_indikator: 1,
+        id_target: 4,
+        id_capaian: 4,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 15,
+        id_periode: 2,
+        id_standar: 2,
+        id_substandar: 5,
+        id_indikator: 1,
+        id_target: 5,
+        id_capaian: 5,
+        diverifikasi: false,
+        status: "aktif"
+    },
+    {
+        id: 16,
+        id_periode: 2,
+        id_standar: 3,
+        id_substandar: 7,
+        id_indikator: 2,
+        id_target: 7,
+        id_capaian: 7,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 17,
+        id_periode: 2,
+        id_standar: 3,
+        id_substandar: 8,
+        id_indikator: 1,
+        id_target: 8,
+        id_capaian: 8,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 18,
+        id_periode: 2,
+        id_standar: 4,
+        id_substandar: 10,
+        id_indikator: 1,
+        id_target: 10,
+        id_capaian: 10,
+        diverifikasi: false,
+        status: "aktif"
+    },
+    {
+        id: 19,
+        id_periode: 2,
+        id_standar: 4,
+        id_substandar: 11,
+        id_indikator: 2,
+        id_target: 11,
+        id_capaian: 11,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 20,
+        id_periode: 2,
+        id_standar: 5,
+        id_substandar: 13,
+        id_indikator: 1,
+        id_target: 13,
+        id_capaian: 13,
+        diverifikasi: true,
+        status: "aktif"
+    },
+
+    // ==========================
+    // PERIODE 3: Manajemen - 2024/2025
+    // ==========================
+    {
+        id: 21,
+        id_periode: 3,
+        id_standar: 1,
+        id_substandar: 1,
+        id_indikator: 1,
+        id_target: 1,
+        id_capaian: 1,
+        diverifikasi: false,
+        status: "aktif"
+    },
+    {
+        id: 22,
+        id_periode: 3,
+        id_standar: 1,
+        id_substandar: 2,
+        id_indikator: 2,
+        id_target: 2,
+        id_capaian: 2,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 23,
+        id_periode: 3,
+        id_standar: 2,
+        id_substandar: 4,
+        id_indikator: 1,
+        id_target: 4,
+        id_capaian: 4,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 24,
+        id_periode: 3,
+        id_standar: 2,
+        id_substandar: 5,
+        id_indikator: 1,
+        id_target: 5,
+        id_capaian: 5,
+        diverifikasi: false,
+        status: "aktif"
+    },
+    {
+        id: 25,
+        id_periode: 3,
+        id_standar: 3,
+        id_substandar: 7,
+        id_indikator: 2,
+        id_target: 7,
+        id_capaian: 7,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 26,
+        id_periode: 3,
+        id_standar: 3,
+        id_substandar: 8,
+        id_indikator: 1,
+        id_target: 8,
+        id_capaian: 8,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 27,
+        id_periode: 3,
+        id_standar: 4,
+        id_substandar: 10,
+        id_indikator: 1,
+        id_target: 10,
+        id_capaian: 10,
+        diverifikasi: false,
+        status: "aktif"
+    },
+    {
+        id: 28,
+        id_periode: 3,
+        id_standar: 5,
+        id_substandar: 13,
+        id_indikator: 2,
+        id_target: 13,
+        id_capaian: 13,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 29,
+        id_periode: 3,
+        id_standar: 5,
+        id_substandar: 14,
+        id_indikator: 1,
+        id_target: 14,
+        id_capaian: 14,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 30,
+        id_periode: 3,
+        id_standar: 6,
+        id_substandar: 16,
+        id_indikator: 1,
+        id_target: 16,
+        id_capaian: 16,
+        diverifikasi: true,
+        status: "aktif"
+    },
+
+    // ==========================
+    // PERIODE 4: Akuntansi - 2024/2025
+    // ==========================
+    {
+        id: 31,
+        id_periode: 4,
+        id_standar: 1,
+        id_substandar: 1,
+        id_indikator: 1,
+        id_target: 1,
+        id_capaian: 1,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 32,
+        id_periode: 4,
+        id_standar: 1,
+        id_substandar: 2,
+        id_indikator: 2,
+        id_target: 2,
+        id_capaian: 2,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 33,
+        id_periode: 4,
+        id_standar: 2,
+        id_substandar: 4,
+        id_indikator: 1,
+        id_target: 4,
+        id_capaian: 4,
+        diverifikasi: false,
+        status: "aktif"
+    },
+    {
+        id: 34,
+        id_periode: 4,
+        id_standar: 2,
+        id_substandar: 5,
+        id_indikator: 1,
+        id_target: 5,
+        id_capaian: 5,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 35,
+        id_periode: 4,
+        id_standar: 3,
+        id_substandar: 7,
+        id_indikator: 2,
+        id_target: 7,
+        id_capaian: 7,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 36,
+        id_periode: 4,
+        id_standar: 3,
+        id_substandar: 8,
+        id_indikator: 1,
+        id_target: 8,
+        id_capaian: 8,
+        diverifikasi: false,
+        status: "aktif"
+    },
+    {
+        id: 37,
+        id_periode: 4,
+        id_standar: 4,
+        id_substandar: 10,
+        id_indikator: 1,
+        id_target: 10,
+        id_capaian: 10,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 38,
+        id_periode: 4,
+        id_standar: 5,
+        id_substandar: 13,
+        id_indikator: 2,
+        id_target: 13,
+        id_capaian: 13,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 39,
+        id_periode: 4,
+        id_standar: 6,
+        id_substandar: 16,
+        id_indikator: 1,
+        id_target: 16,
+        id_capaian: 16,
+        diverifikasi: true,
+        status: "aktif"
+    },
+    {
+        id: 40,
+        id_periode: 4,
+        id_standar: 7,
+        id_substandar: 19,
+        id_indikator: 1,
+        id_target: 19,
+        id_capaian: 19,
+        diverifikasi: false,
+        status: "aktif"
+    }
 ];
