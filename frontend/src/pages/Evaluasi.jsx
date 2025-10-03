@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // ✅ ambil param dari URL
+import { useParams } from "react-router-dom";
 import {
   standarData,
   substandarData,
@@ -10,19 +10,18 @@ import {
   periodeData,
   tahunAkademikData,
   prodiData,
-  laporanProdiData,
 } from "../utils/Data";
 import { FiDownload, FiCheckCircle, FiTarget, FiBook } from "react-icons/fi";
 
 const Evaluasi = () => {
-  const { idProdi } = useParams(); // ✅ prodi id dari URL
-  const prodiId = parseInt(idProdi);
+  const { idProdi } = useParams();
+  const prodiId = parseInt(idProdi, 10);
 
-  const [selectedPeriode, setSelectedPeriode] = useState("");
+  const [selectedPeriode, setSelectedPeriode] = useState(""); // keep as string
   const [periodeOptions, setPeriodeOptions] = useState([]);
   const [filteredEvaluasi, setFilteredEvaluasi] = useState([]);
 
-  // 🔎 Filter periode sesuai id_prodi
+  // Build periodeOptions only when prodiId changes
   useEffect(() => {
     const periodes = periodeData.filter((p) => p.id_prodi === prodiId);
     const formatted = periodes.map((periode) => {
@@ -30,59 +29,53 @@ const Evaluasi = () => {
         (t) => t.id === periode.id_tahunakademik
       );
       return {
-        id: periode.id,
+        id: String(periode.id), // store id as string for <select>
         label: tahunAkademik?.rentang || "Tahun tidak ditemukan",
       };
     });
+
     setPeriodeOptions(formatted);
 
-    if (formatted.length > 0 && !selectedPeriode) {
+    // set default periode (string) when prodi changes
+    if (formatted.length > 0) {
       setSelectedPeriode(formatted[0].id);
+    } else {
+      setSelectedPeriode("");
     }
-  }, [idProdi, prodiId, selectedPeriode]);
+  }, [prodiId]);
 
-  // 🔎 Filter evaluasi sesuai laporanProdiData & periode
+  // Filter evaluasi sesuai periode yang dipilih AND pastikan periode milik prodi
   useEffect(() => {
-    if (!selectedPeriode) return;
+    if (!selectedPeriode) {
+      setFilteredEvaluasi([]);
+      return;
+    }
 
-    const laporanForProdi = laporanProdiData.filter(
-      (lp) => lp.id_prodi === prodiId && lp.status === "aktif"
-    );
+    const periodeId = parseInt(selectedPeriode, 10);
+    const periodeObj = periodeData.find((p) => p.id === periodeId);
 
-    const evaluasiFiltered = initialEvaluasi.filter((ev) =>
-      laporanForProdi.some((lp) => lp.id_evaluasi === ev.id)
+    // safety: jika periode tidak ditemukan atau bukan milik prodi -> kosongkan
+    if (!periodeObj || periodeObj.id_prodi !== prodiId) {
+      setFilteredEvaluasi([]);
+      return;
+    }
+
+    const evaluasiFiltered = initialEvaluasi.filter(
+      (ev) => ev.id_periode === periodeId && ev.status === "aktif"
     );
 
     setFilteredEvaluasi(evaluasiFiltered);
-  }, [prodiId, selectedPeriode]);
-
-  useEffect(() => {
-    const formattedPeriodes = periodeData.map((periode) => {
-      const tahunAkademik = tahunAkademikData.find(
-        (tahun) => tahun.id === periode.id_tahunakademik
-      );
-
-      return {
-        id: periode.id,
-        label: `${tahunAkademik?.rentang || "Tahun tidak ditemukan"}`,
-      };
-    });
-
-    setPeriodeOptions(formattedPeriodes);
-
-    if (formattedPeriodes.length > 0 && !selectedPeriode) {
-      setSelectedPeriode(formattedPeriodes[0].id);
-    }
-  }, [selectedPeriode]);
+    console.log("Filtered Evaluasi:", evaluasiFiltered);
+  }, [selectedPeriode, prodiId]);
 
   const handlePeriodeChange = (e) => {
-    setSelectedPeriode(e.target.value);
+    setSelectedPeriode(e.target.value); // value is string
   };
 
   const handleCapaianChange = (id, value) => {
     setFilteredEvaluasi((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, id_capaian: parseInt(value) } : item
+        item.id === id ? { ...item, id_capaian: parseInt(value, 10) } : item
       )
     );
   };
@@ -107,10 +100,10 @@ const Evaluasi = () => {
 
       return {
         ...item,
-        standar: standar?.nama,
-        substandar: substandar?.nama,
-        indikator: indikator?.jenis,
-        target: target?.deskripsi,
+        standar: standar?.nama || `Standar ${item.id_standar}`,
+        substandar: substandar?.nama || `Substandar ${item.id_substandar}`,
+        indikator: indikator?.jenis || `Indikator ${item.id_indikator}`,
+        target: target?.deskripsi || `Target ${item.id_target}`,
         capaian: capaian?.hasil || "",
       };
     });
@@ -130,10 +123,16 @@ const Evaluasi = () => {
     return grouped;
   };
 
-  // Statistik Card
+  // Statistik Card -> dihitung dari data hasil filter (unik)
+  const uniqueStandarCount = new Set(filteredEvaluasi.map((e) => e.id_standar))
+    .size;
+  const uniqueSubstandarCount = new Set(
+    filteredEvaluasi.map((e) => e.id_substandar)
+  ).size;
+
   const stats = {
-    standar: standarData.length,
-    substandar: substandarData.length,
+    standar: uniqueStandarCount,
+    substandar: uniqueSubstandarCount,
     capaianTerisi: filteredEvaluasi.filter((e) => e.id_capaian).length,
     diverifikasi: filteredEvaluasi.filter((e) => e.diverifikasi).length,
   };
@@ -172,6 +171,7 @@ const Evaluasi = () => {
             onChange={handlePeriodeChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
           >
+            <option value="">-- Pilih Periode --</option>
             {periodeOptions.map((periode) => (
               <option key={periode.id} value={periode.id}>
                 {periode.label}
@@ -238,83 +238,96 @@ const Evaluasi = () => {
 
       {/* Tabel Evaluasi */}
       <div className="space-y-8">
-        {Object.entries(groupedByStandar()).map(([standar, substandars]) => (
-          <div key={standar} className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">{standar}</h2>
-
-            {Object.entries(substandars).map(
-              ([substandar, indikatorGroups]) => (
-                <div key={substandar} className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                    {substandar}
-                  </h3>
-
-                  {Object.entries(indikatorGroups).map(([indikator, items]) => (
-                    <div key={indikator} className="mb-4">
-                      <table className="w-full border border-gray-300">
-                        <thead className="bg-orange-500 text-white">
-                          <tr>
-                            <th className="px-4 py-2 text-left border border-gray-300 w-2/5">
-                              {indikator}
-                            </th>
-                            <th className="px-4 py-2 text-center border border-gray-300 w-1/5">
-                              Capaian
-                            </th>
-                            <th className="px-4 py-2 text-center border border-gray-300 w-1/5">
-                              Diverifikasi
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {items.map((row) => (
-                            <tr
-                              key={row.id}
-                              className="hover:bg-gray-50 text-sm"
-                            >
-                              <td className="px-4 py-2 border border-gray-300">
-                                {row.target}
-                              </td>
-                              <td className="px-4 py-2 border border-gray-300 text-center">
-                                <select
-                                  value={row.id_capaian || ""}
-                                  onChange={(e) =>
-                                    handleCapaianChange(row.id, e.target.value)
-                                  }
-                                  className="border px-2 py-1 rounded"
-                                >
-                                  <option value="">-- Pilih --</option>
-                                  {capaianData.map((c) => (
-                                    <option key={c.id} value={c.id}>
-                                      {c.hasil}
-                                    </option>
-                                  ))}
-                                </select>
-                              </td>
-                              <td
-                                className="px-4 py-2 border border-gray-300 text-center cursor-pointer"
-                                onClick={() => toggleVerifikasi(row.id)}
-                              >
-                                {row.diverifikasi ? (
-                                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                                    ✔ Ya
-                                  </span>
-                                ) : (
-                                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
-                                    ✘ Tidak
-                                  </span>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ))}
-                </div>
-              )
-            )}
+        {Object.entries(groupedByStandar()).length === 0 ? (
+          <div className="bg-white rounded-lg shadow-md p-6 text-center text-gray-600">
+            Tidak ada data evaluasi untuk prodi / periode yang dipilih.
           </div>
-        ))}
+        ) : (
+          Object.entries(groupedByStandar()).map(([standar, substandars]) => (
+            <div key={standar} className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">
+                {standar}
+              </h2>
+
+              {Object.entries(substandars).map(
+                ([substandar, indikatorGroups]) => (
+                  <div key={substandar} className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                      {substandar}
+                    </h3>
+
+                    {Object.entries(indikatorGroups).map(
+                      ([indikator, items]) => (
+                        <div key={indikator} className="mb-4">
+                          <table className="w-full border border-gray-300">
+                            <thead className="bg-orange-500 text-white">
+                              <tr>
+                                <th className="px-4 py-2 text-left border border-gray-300 w-2/5">
+                                  {indikator}
+                                </th>
+                                <th className="px-4 py-2 text-center border border-gray-300 w-1/5">
+                                  Capaian
+                                </th>
+                                <th className="px-4 py-2 text-center border border-gray-300 w-1/5">
+                                  Diverifikasi
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {items.map((row) => (
+                                <tr
+                                  key={row.id}
+                                  className="hover:bg-gray-50 text-sm"
+                                >
+                                  <td className="px-4 py-2 border border-gray-300">
+                                    {row.target}
+                                  </td>
+                                  <td className="px-4 py-2 border border-gray-300 text-center">
+                                    <select
+                                      value={row.id_capaian || ""}
+                                      onChange={(e) =>
+                                        handleCapaianChange(
+                                          row.id,
+                                          e.target.value
+                                        )
+                                      }
+                                      className="border px-2 py-1 rounded"
+                                    >
+                                      <option value="">-- Pilih --</option>
+                                      {capaianData.map((c) => (
+                                        <option key={c.id} value={c.id}>
+                                          {c.hasil}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </td>
+                                  <td
+                                    className="px-4 py-2 border border-gray-300 text-center cursor-pointer"
+                                    onClick={() => toggleVerifikasi(row.id)}
+                                  >
+                                    {row.diverifikasi ? (
+                                      <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                        ✔ Ya
+                                      </span>
+                                    ) : (
+                                      <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+                                        ✘ Tidak
+                                      </span>
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )
+                    )}
+                  </div>
+                )
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

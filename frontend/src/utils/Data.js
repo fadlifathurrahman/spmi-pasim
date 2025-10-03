@@ -10,16 +10,17 @@ export const jenisIndikatorData = [
 // Data Tahun Akademik & Periode
 // ==========================
 export const tahunAkademikData = [
-    { id: 1, rentang: "2022/2023", status: "pasif" },
+    { id: 1, rentang: "2022/2023", status: "aktif" },
     { id: 2, rentang: "2023/2024", status: "aktif" },
     { id: 3, rentang: "2024/2025", status: "aktif" }
 ];
 
 export const periodeData = [
     { id: 1, id_tahunakademik: 2, id_prodi: 1, status: "aktif" },
-    { id: 2, id_tahunakademik: 2, id_prodi: 2, status: "aktif" },
-    { id: 3, id_tahunakademik: 3, id_prodi: 3, status: "pasif" },
-    { id: 4, id_tahunakademik: 3, id_prodi: 4, status: "pasif" }
+    { id: 2, id_tahunakademik: 1, id_prodi: 1, status: "aktif" },
+    { id: 3, id_tahunakademik: 2, id_prodi: 2, status: "aktif" },
+    { id: 4, id_tahunakademik: 3, id_prodi: 3, status: "aktif" },
+    { id: 5, id_tahunakademik: 3, id_prodi: 4, status: "aktif" }
 ];
 
 // ==========================
