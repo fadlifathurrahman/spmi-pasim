@@ -33,8 +33,25 @@ const Dashboard = () => {
     tahunAkademikData[tahunAkademikData.length - 1]?.rentang
   );
 
-  // State untuk capaian universitas
+  // State untuk capaian universitas & per prodi
   const [capaianUniversitas, setCapaianUniversitas] = useState(0);
+  const [capaianProdi, setCapaianProdi] = useState([]);
+
+  // Data capaian per tahun
+  const capaianProdiData = {
+    "2023/2024": [
+      { nama: "Teknik Informatika", persentase: 70 },
+      { nama: "Sistem Informasi", persentase: 65 },
+      { nama: "Manajemen", persentase: 60 },
+      { nama: "Akuntansi", persentase: 75 },
+    ],
+    "2024/2025": [
+      { nama: "Teknik Informatika", persentase: 85 },
+      { nama: "Sistem Informasi", persentase: 72 },
+      { nama: "Manajemen", persentase: 68 },
+      { nama: "Akuntansi", persentase: 91 },
+    ],
+  };
 
   useEffect(() => {
     const totalStandar = standarData.length;
@@ -59,25 +76,21 @@ const Dashboard = () => {
     });
   }, []);
 
-  // Data capaian per prodi
-  const capaianProdi = [
-    { nama: "Teknik Informatika", persentase: 85 },
-    { nama: "Sistem Informasi", persentase: 72 },
-    { nama: "Manajemen", persentase: 68 },
-    { nama: "Akuntansi", persentase: 91 },
-  ];
-
-  // Hitung capaian universitas sebagai rata-rata dari semua prodi
+  // Update capaianProdi berdasarkan tahun terpilih
   useEffect(() => {
-    if (capaianProdi.length > 0) {
-      const totalPersen = capaianProdi.reduce(
+    if (selectedTahun && capaianProdiData[selectedTahun]) {
+      setCapaianProdi(capaianProdiData[selectedTahun]);
+
+      const totalPersen = capaianProdiData[selectedTahun].reduce(
         (sum, prodi) => sum + prodi.persentase,
         0
       );
-      const rataRata = Math.round(totalPersen / capaianProdi.length);
+      const rataRata = Math.round(
+        totalPersen / capaianProdiData[selectedTahun].length
+      );
       setCapaianUniversitas(rataRata);
     }
-  }, [capaianProdi, selectedTahun]); // bisa juga depend on capaianProdi kalau nanti dinamis
+  }, [selectedTahun]);
 
   // Fungsi untuk mendapatkan warna berdasarkan persentase
   const getProgressColor = (percentage) => {
@@ -225,7 +238,6 @@ const Dashboard = () => {
             {/* Circular Progress */}
             <div className="relative w-32 h-32 mb-4">
               <svg className="w-full h-full" viewBox="0 0 36 36">
-                {/* Background circle */}
                 <path
                   d="M18 2.0845
                     a 15.9155 15.9155 0 0 1 0 31.831
@@ -234,7 +246,6 @@ const Dashboard = () => {
                   stroke="#E5E7EB"
                   strokeWidth="3"
                 />
-                {/* Progress circle */}
                 <path
                   d="M18 2.0845
                     a 15.9155 15.9155 0 0 1 0 31.831

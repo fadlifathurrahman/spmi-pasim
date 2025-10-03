@@ -55,7 +55,7 @@ const SideBar = ({ isOpen, closeSidebar }) => {
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
     localStorage.removeItem("loginTime");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   return (
@@ -76,9 +76,11 @@ const SideBar = ({ isOpen, closeSidebar }) => {
           </div>
           <div>
             <h1 className="text-lg font-bold leading-tight text-red-800">
-              SISTEM SPMI
+              SPMI
             </h1>
-            <p className="text-xs text-red-600 opacity-80">Universitas PASIM</p>
+            <p className="text-xs text-red-600 opacity-80">
+              Universitas Nasional PASIM
+            </p>
           </div>
         </div>
       </div>
