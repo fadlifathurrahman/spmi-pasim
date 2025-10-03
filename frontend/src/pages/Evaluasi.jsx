@@ -17,11 +17,15 @@ const Evaluasi = () => {
   const { idProdi } = useParams();
   const prodiId = parseInt(idProdi, 10);
 
-  const [selectedPeriode, setSelectedPeriode] = useState(""); // keep as string
+  const [selectedPeriode, setSelectedPeriode] = useState("");
   const [periodeOptions, setPeriodeOptions] = useState([]);
   const [filteredEvaluasi, setFilteredEvaluasi] = useState([]);
 
-  // Build periodeOptions only when prodiId changes
+  // Ambil user login dari localStorage
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const userRole = currentUser?.role || "";
+
+  // Build periodeOptions
   useEffect(() => {
     const periodes = periodeData.filter((p) => p.id_prodi === prodiId);
     const formatted = periodes.map((periode) => {
@@ -29,14 +33,12 @@ const Evaluasi = () => {
         (t) => t.id === periode.id_tahunakademik
       );
       return {
-        id: String(periode.id), // store id as string for <select>
+        id: String(periode.id),
         label: tahunAkademik?.rentang || "Tahun tidak ditemukan",
       };
     });
 
     setPeriodeOptions(formatted);
-
-    // set default periode (string) when prodi changes
     if (formatted.length > 0) {
       setSelectedPeriode(formatted[0].id);
     } else {
@@ -44,7 +46,7 @@ const Evaluasi = () => {
     }
   }, [prodiId]);
 
-  // Filter evaluasi sesuai periode yang dipilih AND pastikan periode milik prodi
+  // Filter evaluasi
   useEffect(() => {
     if (!selectedPeriode) {
       setFilteredEvaluasi([]);
@@ -54,7 +56,6 @@ const Evaluasi = () => {
     const periodeId = parseInt(selectedPeriode, 10);
     const periodeObj = periodeData.find((p) => p.id === periodeId);
 
-    // safety: jika periode tidak ditemukan atau bukan milik prodi -> kosongkan
     if (!periodeObj || periodeObj.id_prodi !== prodiId) {
       setFilteredEvaluasi([]);
       return;
@@ -65,11 +66,10 @@ const Evaluasi = () => {
     );
 
     setFilteredEvaluasi(evaluasiFiltered);
-    console.log("Filtered Evaluasi:", evaluasiFiltered);
   }, [selectedPeriode, prodiId]);
 
   const handlePeriodeChange = (e) => {
-    setSelectedPeriode(e.target.value); // value is string
+    setSelectedPeriode(e.target.value);
   };
 
   const handleCapaianChange = (id, value) => {
@@ -123,7 +123,6 @@ const Evaluasi = () => {
     return grouped;
   };
 
-  // Statistik Card -> dihitung dari data hasil filter (unik)
   const uniqueStandarCount = new Set(filteredEvaluasi.map((e) => e.id_standar))
     .size;
   const uniqueSubstandarCount = new Set(
@@ -187,7 +186,6 @@ const Evaluasi = () => {
           PDF
         </button>
       </div>
-
       {/* Statistik Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
@@ -282,28 +280,44 @@ const Evaluasi = () => {
                                   <td className="px-4 py-2 border border-gray-300">
                                     {row.target}
                                   </td>
+
+                                  {/* CAPAIAN */}
                                   <td className="px-4 py-2 border border-gray-300 text-center">
-                                    <select
-                                      value={row.id_capaian || ""}
-                                      onChange={(e) =>
-                                        handleCapaianChange(
-                                          row.id,
-                                          e.target.value
-                                        )
-                                      }
-                                      className="border px-2 py-1 rounded"
-                                    >
-                                      <option value="">-- Pilih --</option>
-                                      {capaianData.map((c) => (
-                                        <option key={c.id} value={c.id}>
-                                          {c.hasil}
-                                        </option>
-                                      ))}
-                                    </select>
+                                    {userRole === "admin" ? (
+                                      <select
+                                        value={row.id_capaian || ""}
+                                        onChange={(e) =>
+                                          handleCapaianChange(
+                                            row.id,
+                                            e.target.value
+                                          )
+                                        }
+                                        className="border px-2 py-1 rounded"
+                                      >
+                                        <option value="">-- Pilih --</option>
+                                        {capaianData.map((c) => (
+                                          <option key={c.id} value={c.id}>
+                                            {c.hasil}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    ) : (
+                                      <span>
+                                        {capaianData.find(
+                                          (c) => c.id === row.id_capaian
+                                        )?.hasil || "-"}
+                                      </span>
+                                    )}
                                   </td>
+
+                                  {/* DIVERIFIKASI */}
                                   <td
                                     className="px-4 py-2 border border-gray-300 text-center cursor-pointer"
-                                    onClick={() => toggleVerifikasi(row.id)}
+                                    onClick={
+                                      userRole === "user"
+                                        ? () => toggleVerifikasi(row.id)
+                                        : undefined
+                                    }
                                   >
                                     {row.diverifikasi ? (
                                       <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
